@@ -208,7 +208,7 @@
                     // execute GET request
                     $.ajax({
                     type: 'GET',
-                    url: '/home',
+                    url: '/user/home',
                     cache: false,
                     success: function (result) {
                         $('#cont').html($(result).find('#slot'));
@@ -238,7 +238,7 @@
             var timer1 = setTimeout(function refresh() {
                 $.ajax({
                     type: 'GET',
-                    url: '/home',
+                    url: '/user/home',
                     cache: false,
                     success: function (result) {
                         $('.side').html($(result).find('.notif-slot, .notif-bal, .notif-reserve'));
