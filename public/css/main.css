@@ -422,6 +422,10 @@ body {
     padding: 1.5% 5% 0;
 }
 
+.excess-time-lbl {
+    color: #FF554E;
+}
+
 .time-lbl, .date-lbl, .slot-letter, .duration-lbl, .remaining-time-lbl{
     color: #EFF2F7;
     font-size: 1.1em;
