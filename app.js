@@ -31,7 +31,7 @@ let timer1 = setTimeout(function update() {
 
 // MIDDLEWARES
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + 'public'));
+app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 app.use(validator());
 app.use(session({
