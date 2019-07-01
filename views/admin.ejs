@@ -190,7 +190,7 @@
             if (signal.refresh) {
                 $.ajax({
                     type: 'GET',
-                    url: '/admin',
+                    url: '/admin/home',
                     cache: false,
                     success: function (result) {
                         $('#cont').html($(result).find('#slot'));
@@ -204,7 +204,7 @@
         var timer1 = setTimeout(function refresh() {
             $.ajax({
                 type: 'GET',
-                url: '/admin',
+                url: '/admin/home',
                 cache: false,
                 success: function (result) {
                     $('#cont').html($(result).find('#slot'));
