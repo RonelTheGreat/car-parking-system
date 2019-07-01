@@ -1,0 +1,270 @@
+
+/********************************************/
+/*                    NAV                   */
+/********************************************/
+.nav {
+    grid-template-columns: 1fr 15% 15% 15%; 
+}
+
+.nav a:hover i{
+    color: #FFBD2E;
+}
+
+.home > a {
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #EFF2F7;
+}
+
+.reg-user a{
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #EFF2F7;
+}
+
+.change-rate a {
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #EFF2F7;
+}
+/*                    NAV                   */
+/********************************************/
+
+
+
+
+/********************************************/
+/*                  SIDEBAR                 */
+/********************************************/
+.side-admin{
+    /* grid-template-rows: repeat(10, 10%); */
+    grid-template-rows: 10% 90%;
+    row-gap: 0;
+    margin-right: 3%;
+    /* border: 1px dashed orange; */
+}
+
+.side-admin > .header h2 {
+    text-align: center;
+    text-transform: uppercase;
+    padding: 1%;
+    font-weight: 100;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+.users-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 1rem;
+    /* border: 1px dashed pink; */
+}
+
+.users-container > .users {
+    display: grid;
+    grid-template-columns: 1fr 10%;
+    text-align: left;
+    padding: 3%;
+    font-size: 1.4em;
+}
+
+.users-container > .users .delete:hover {
+    color: #FFBD2E;
+    cursor: pointer;
+}
+
+
+.users-container > .users .usernames {
+    color: #EFF2F7;
+    text-decoration: none;
+    /* border: 1px dotted white; */
+    padding: 1% 25%;
+}
+.users .usernames:hover > i{
+    color: #FFBD2E;
+}
+/*                  SIDEBAR                 */
+/********************************************/
+
+
+
+/********************************************/
+/*                   USER                   */
+/********************************************/
+.main-load {
+    grid-template-columns: 3fr 2fr 2fr;
+    grid-template-rows: 1fr;
+    column-gap: 4%;
+}
+
+.main div > .heading {
+    font-size: 1.8em;
+    font-weight: 100;
+    /* margin: 0; */
+}
+
+.heading a {
+    position: relative;
+    text-decoration: none;
+    font-size: 0.65em;
+    color: #EFF2F7;
+    padding: 0.4rem;
+}
+
+
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -50%;
+    background-color: rgba(0, 0, 0, 0.85);
+    width: 10rem;
+}
+
+.edit:hover .tooltip{
+    display: block;
+}
+
+.delete:hover .tooltip {
+    display: block;
+}
+
+.current-user-info {
+    border: 2px solid #29CA41;
+}
+
+
+.current-user-info > p{
+    /* border: 1px dashed orange; */
+    padding-left: 2%;
+    color: #fff;
+    letter-spacing: 2px;
+    font-size: 1.4em;
+}
+
+.current-user-info .lbl {
+    text-transform: uppercase;
+    color: #A6B2BF;
+    font-size: 0.8em;
+}
+
+.current-user-info .name-lbl {
+    text-transform: uppercase;
+}
+
+.current-user-info .slot-lbl {
+    text-transform: uppercase;
+}
+.current-user-info .debt {
+    color: #FF554E;
+}
+
+
+.loading-container {
+    border: 2px solid #00AAFF;
+}
+
+.loading-container > .heading {
+    /* border: 1px dashed orange; */
+    margin-bottom: 5%;
+}
+
+.loading-container form{
+    padding: 3%;
+}
+
+.loading-container form > button {
+    margin-top: 5%;
+}
+
+.loading-container .amount-lbl{
+    font-size: 1.5em;
+    padding-left: 1%;
+    text-transform: uppercase;
+    /* border: 1px dashed #fff; */
+}
+
+
+/* change rates */
+.change-rate-container {
+    border: 2px solid #FF554E;
+}
+
+#change-rate-form {
+    margin-top: 5%;
+}
+
+#change-rate-form input {
+    width: 20%;
+    display: inline-block;
+}
+
+.change-rate-container .change-rate-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;
+}
+
+.change-rate-container .reservation-rate-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;   
+}
+
+.change-rate-container .max-duration-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;
+}
+
+.change-rate-container .max-duration-unit {
+    font-size: 0.7em;
+}
+
+
+.change-rate-btn {
+    font-size: 0.5em;
+}
+/*                   USER                   */
+/********************************************/
+
+
+
+/********************************************/
+/*                   MODAL                  */
+/********************************************/
+.modal-cont-admin {
+    text-align: left;
+    z-index: -1;
+}
+
+
+.modal-cont-admin .modal-tag {
+    border-bottom: 2px solid #FFBD2E;
+    text-transform: uppercase;
+    font-size: 1.8em;
+    text-align: center;
+    margin: 0;
+}
+
+.prompt > p {
+    margin: 4% 3%;
+    font-size: 1.3em;
+}
+
+.prompt .fullname-container {
+    text-transform: uppercase;
+}
+
+.modal-lbl {
+    color: #A6B2BF;
+    text-transform: lowercase;
+}
+
+#excess-time {
+    color: #FF554E;
+}
+
+/********************************************/
+/*                   MODAL                  */
+/********************************************/

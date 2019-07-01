@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SIMULATION</title>
+</head>
+<body>
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <label>CHOOSE SLOT: </label>
+    <input type="text" class="slotLetter"><br><br>
+
+    <label>CHOOSE ACTION</label>
+    <button class="vacate">vacate</button>
+    <button class="occupy">occupy</button>
+
+    <script>
+        var socket = io.connect('http://192.168.1.36:3000');
+
+        var slotLetterInput = document.querySelector('.slotLetter');
+        var vacateBtn = document.querySelector('.vacate');
+        var occupyBtn = document.querySelector('.occupy');
+        
+        vacateBtn.addEventListener('click', function() {
+            var source = 'depart';
+            var slotLetter = slotLetterInput.value;
+
+            socket.emit('signalFromMCU', {source: source, slot: slotLetter});
+        })
+
+        occupyBtn.addEventListener('click', function() {
+            var source = 'park';
+            var slotLetter = slotLetterInput.value;
+
+            socket.emit('signalFromMCU', {source: source, slot: slotLetter});
+        })
+    </script>
+</body>
+</html>

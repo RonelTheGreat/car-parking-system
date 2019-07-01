@@ -1,0 +1,212 @@
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+    
+}
+  
+  /* 
+    ##Device = Laptops, Desktops
+    ##Screen = B/w 1025px to 1280px
+  */
+  
+@media (min-width: 1025px) and (max-width: 1280px) {
+    
+    
+    
+}
+  
+  /* 
+    ##Device = Tablets, Ipads (portrait)
+    ##Screen = B/w 768px to 1024px
+  */
+  
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+    
+    
+}
+  
+  /* 
+    ##Device = Tablets, Ipads (landscape)
+    ##Screen = B/w 768px to 1024px
+  */
+  
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    
+
+    
+}
+  
+  /* 
+    ##Device = Low Resolution Tablets, Mobiles (Landscape)
+    ##Screen = B/w 481px to 767px
+  */
+  
+@media (min-width: 481px) and (max-width: 767px) {
+
+}
+  
+  /* 
+    ##Device = Most of the Smartphones Mobiles (Portrait)
+    ##Screen = B/w 320px to 479px
+  */
+  
+@media (min-width: 320px) and (max-width: 480px) {
+
+    /********************************************/
+    /*              PARENT CONTAINER            */
+    /********************************************/
+    .parent {
+        grid-template-rows: 20% 39% 28% 10%;
+        row-gap: 1%;
+    }
+    /*              PARENT CONTAINER            */
+    /********************************************/
+
+
+
+    /********************************************/
+    /*                    NAV                   */
+    /********************************************/
+
+    .nav {
+        grid-template-columns: 1fr 50%;
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-areas: 
+            ". home"
+            "brand reg"
+            ". user";
+    }
+
+    .nav > div {
+        border-left: 2px solid #00AAFF;   
+    }
+
+    .brand {
+        border: none;
+        grid-area: brand;
+    }
+
+    .brand > p {
+        font-size: 1.4em;
+    }
+
+    .home {
+        text-align: left;
+        grid-area: home; 
+    }
+    
+    .home > a {
+        font-size: 1.1em;
+        padding: 0 5%;  
+    }
+
+    a:active {
+        color: #FFBD2E;
+    }
+
+    .reg-user {
+        text-align: left;
+        grid-area: reg;
+    }
+
+    .reg-user > a {
+        font-size: 1.1em;
+        padding: 0 5%;
+    }
+
+    .user-info {
+        grid-area: user;
+        text-align: left;
+    }
+
+    .user-info p {
+        padding: 0 5%;
+        font-size: 1.1em;
+    }
+
+    .username:hover .logout{
+        padding: 0 3%;
+    }
+    /*                    NAV                   */
+    /********************************************/
+
+
+
+    /********************************************/
+    /*                  SIDEBAR                 */
+    /********************************************/
+    .side-admin{
+        grid-template-rows: 20% 1fr;
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "header"
+            "users";
+    }
+
+    .side-admin > .header {
+        grid-area: header;
+        z-index: 1;
+    }
+    
+    .side-admin > .header h2 {
+        font-size: 1.4em; 
+    }
+    
+    .users-container {
+        grid-area: users;
+    }
+    
+    .users-container > .users {
+        font-size: 1.2em;
+    }
+
+    /*                  SIDEBAR                 */
+    /********************************************/
+
+
+
+    /********************************************/
+    /*                   USER                   */
+    /********************************************/
+    .main-load {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        column-gap: 2%;
+        overflow-y: scroll;
+    }
+
+    .main div > .heading {
+        font-size: 1.4em;
+    }
+
+
+    .current-user-info > p{
+        font-size: 1.1em;
+    }
+    
+    .loading-container .amount-lbl{
+        font-size: 1.2em;
+        padding-left: 1%;
+    }
+
+    /*                   USER                   */
+    /********************************************/
+
+
+    /********************************************/
+    /*             LOGIN  && REGISTER           */
+    /********************************************/
+    .form-container {
+        width: 98%;
+        padding: 0 2%;
+        margin: 10% 0;
+    }
+    /*                   LOGIN                  */
+    /********************************************/
+    
+}

@@ -1,0 +1,23 @@
+<% include ./partials/user_top %>
+
+    <div class="login-parent">
+        <div class="form-container">
+            <h1><i class="fas fa-user-ninja"></i> login to your account</h1>
+            <form action="/login" method="POST">
+                <% if (errors) { %>
+                <% errors.forEach(error => { %>
+                <p class="error"><i class="fas fa-exclamation-circle"></i>
+                    <%= error.msg %>
+                </p>
+                <% }) %>
+                <% } %>
+                <label>username</label>
+                <input type="text" name="username" value="<%= (inputValues) ? inputValues[0].username : '' %>">
+                <label>password</label>
+                <input type="password" name="password">
+                <button><i class="fas fa-key"></i> log me in</button>
+            </form>
+        </div>
+    </div>
+    
+<% include ./partials/bottom %>

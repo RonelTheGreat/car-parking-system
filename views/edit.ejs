@@ -1,0 +1,35 @@
+<% include ./partials/admin_top %>
+    
+    <div class="edit-parent">
+        <div class="form-container">
+            <div class="home">
+                <a href="/admin/load/<%= user.username %>"><i class="fas fa-arrow-left"></i> back</a> 
+            </div>
+
+            <h1>Edit <%= user.username %>'s profile</h1>
+
+            <form action="/admin/<%= user.username %>" method="POST">
+                <label>username</label>
+                <input type="text" name="user[username]" value="<%= user.username %>">
+
+                <label>first name</label>
+                <input type="text" name="user[fname]" value="<%= user.fname %>">
+
+                <label>middle initial</label>
+                <input type="text" name="user[mi]" value="<%= user.mi %>">
+
+                <label>last name</label>
+                <input type="text" name="user[lname]" value="<%= user.lname %>">
+
+                <label>rfid</label>
+                <input type="text" name="user[rfid]" value="<%= user.rfid %>">
+
+                <label>contact</label>
+                <input type="text" name="user[contact]" value="<%= user.contact %>">
+
+                <button><i class="far fa-thumbs-up"></i> update</button>
+            </form>
+        </div>
+    </div>
+
+<% include ./partials/bottom %>

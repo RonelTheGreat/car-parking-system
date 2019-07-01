@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LANDING</title>
+    <link rel="icon" href="/favicon/favicon.ico">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/all.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Teko" rel="stylesheet">
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+    <div class="parent">
+        <div class="nav bg-dark">
+            <div class="brand">
+                <p><i class="fas fa-car"></i>
+                    <span style="color: #29CA41;">parkya</span>
+                    <span style="color: #00AAFF;">ni</span>  
+                    <span style="color: #FFBD2E;">ed car</span>
+                </p>
+            </div>
+
+            <div class="user-info">
+                <a href="/login" class="login"><i class="fas fa-user-ninja"></i> Login</a></p>
+            </div>
+        </div>
+        
+        <div class="main bg-dark">
+            <div class="parking-slot" id="cont">
+
+                <% slots.forEach(slot => { %>
+                <div class="slot" id="slot">
+                    <p class="letter" id='letter'>
+                        <%= slot.slotLetter %>
+                    </p>
+                    <div class="indicator bg-<%= slot.indicator %>-alpha" id="indicator">
+                        <p class="state">
+                            <% if (slot.state == 'occupied') { %>
+                            <i class="fas fa-car"></i> occupied
+                            <% } else if (slot.state == 'vacant'){ %>
+                            <i class="far fa-check-circle"></i> vacant            
+                            <% } else if (slot.state == 'reserved'){ %>
+                            <i class="far fa-calendar-check"></i> reserved
+                            <% } else { %>
+                            <i class="far fa-check-circle"></i> vacant
+                            <% } %>
+                        </p>
+                    </div>
+            
+                </div>
+                <% }) %>
+            </div>
+
+            <% include ./partials/free_space %>
+        </div>
+
+        <div class="side">
+            <div class="notif-slot bg-dark">
+                <p class="heading bg-green"><i class="fas fa-car"></i> slots available</p>
+                <p class="label"><%= vacant %></p>
+            </div>
+
+            <div class="notif-bal bg-dark">
+                    <p class="heading bg-blue"><i class="far fa-check-square"></i> register now!</p>
+                    <p class="landing-tag">Just go to the parking booth !</p>
+                </div>
+
+            <div class="notif-reserve bg-dark">
+                <p class="heading bg-orange"><i class="far fa-bell"></i> welcome to parkya ni ed car</p>
+
+                <p class="landing-tag">
+                    Online car parking reservation, walay hasuuul!
+                </p>
+                <p class="location">
+                    <i class="fas fa-map-marker-alt"></i> location:
+                    <span class="location-lbl">USA, California</span>
+                </p>
+                
+                <p class="operating-hours">
+                    <i class="far fa-clock"></i> operating hours:
+                    <span class="operating-hours-lbl">10am - 10AM</span>
+                </p>
+
+                <p class="contact">
+                    <i class="far fa-id-card"></i> contact #:
+                    <span class="contact-lbl">0955-378-410</span>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="footer bg-darker-gray">
+            <div class="links">
+                <a href="#">contact us</a>
+                <a href="#">about us</a>
+                <a href="#">terms & agreement</a>
+            </div>
+
+            <p class="fg-gray">Copyright &copy; 2019</p>
+        </div>
+    </div>
+
+    <script>
+
+        var socket = io.connect('http://192.168.1.36:3000');
+
+
+        socket.on('signalFromServer', (res) => {
+            if (res.refresh) {
+                // update slot
+                $.ajax({
+                    type: 'GET',
+                    url: '/',
+                    cache: false,
+                    success: function (res) {
+                        $('#cont').html($(res).find('#slot'));
+                    },
+                });
+            }
+        })
+    </script>
+</body>
+</html>

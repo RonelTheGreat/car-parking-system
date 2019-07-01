@@ -1,0 +1,328 @@
+<% include ./partials/user_top %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <div class="parent" id="parent">
+        <div class="nav bg-dark">
+            <div class="brand">
+                <p><i class="fas fa-car"></i>
+                    <span style="color: #29CA41;">park</span>ya
+                    <span style="color: #00AAFF;">ni</span>  
+                    <span style="color: #FFBD2E;">ed car</span>
+                </p>
+            </div>
+
+            <div class="user-info">
+                <p>
+                    Logged in as 
+                    <span class="username">
+                        <%= user.username %> <i class="fas fa-caret-down"></i>
+                        <a href="/logout" class="logout bg-dark">logout</a>
+                    </span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="main bg-dark">
+
+            <div class="overlay">
+                <div class="loading-screen">
+                    <!-- <span class="loading-lbl">processing request</span><br> -->
+                    <div class="lds-roller">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-cont" id="modal">
+                <div class="prompt bg-dark reservation-prompt">
+                    <p class="user-modal-tag1"><i class="far fa-calendar-alt"></i> reserve this slot?</p>
+                    <p class="user-modal-tag">P <%= slots[0].slotRate.reservationRate %> will be deducted from your account</p>
+                    <button id="confirm" onclick="confirm();"><i class="far fa-check-circle"></i> confirm</button>
+                    <button id="cancel" onclick="cancel();"><i class="far fa-times-circle"></i> cancel</button>
+                </div>
+            </div>
+
+            <div class="modal-response modal-cont modal-cont-admin">
+                <div class="prompt bg-dark">
+                    <p class="response-modal-tag modal-tag"></p>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> close</button>
+                </div>
+            </div>
+
+            <div class="parking-slot" id="cont">
+                <% slots.forEach(slot => { %>
+                <div class="slot" id="slot">
+                    <p class="letter" id='letter'>
+                        <%= slot.slotLetter %>
+                    </p>
+                    <div class="indicator bg-<%= slot.indicator %>-alpha" id="indicator">
+            
+                        <% if (slot.state == 'vacant') { %>
+                        <p class="tag"><i class="fas fa-exclamation-circle"></i> click slot to reserve</p>
+                        <% } %>
+                        <p class="state">
+                            <% if (slot.state == 'occupied') { %>
+                            <i class="fas fa-car"></i> occupied
+            
+                            <% } else if (slot.state == 'vacant'){ %>
+                            <span id="username" hidden><%= user.username %></span>
+                            <span id="slotLetter" hidden><%= slot.slotLetter %></span>
+                            <i class="far fa-check-circle"></i> vacant
+            
+            
+                            <% } else if (slot.state == 'reserved'){ %>
+                            <i class="far fa-calendar-check"></i> reserved
+                            <% } else { %>
+                            <i class="far fa-check-circle"></i> vacant
+                            <% } %>
+                        </p>
+
+                        <span id="username" hidden><%= user.username %></span>
+                    </div>
+            
+                </div>
+                <% }) %>
+            </div>
+
+            <% include ./partials/free_space %>
+        </div>
+        
+        <div class="side">
+            <div class="notif-slot bg-dark">
+                <p class="heading bg-green"><i class="fas fa-car"></i> slots available</p>
+                <p class="label"><%= vacant %></p>    
+            </div>
+        
+            <div class="notif-bal bg-dark">
+
+                <% if (user.debt > 0) { %>
+                    <p class="heading bg-red"><i class="far fa-credit-card"></i> debt</p>
+                    <p class="label debt">P <%= user.debt %></p>
+                <% } else { %>
+                    <p class="heading bg-blue"><i class="far fa-credit-card"></i> balance</p>
+                    <p class="label bal">P <%= user.balance %></p>
+                <% } %>
+                
+            </div>
+        
+            <div class="notif-reserve bg-dark">
+                <p class="heading bg-orange"><i class="far fa-calendar-alt"></i> reservation</p>
+
+                <p class="date">
+                    <i class="far fa-calendar-alt"></i>
+                    date reserved: 
+                    <span class="date-lbl"><%= (user.reservation.date) ? user.reservation.date : '' %></span>
+                </p>
+
+                <p class="time">
+                    <i class="far fa-clock"></i>
+                    time reserved: 
+                    <span class="time-lbl"><%= (user.reservation.time) ? user.reservation.time : ''  %></span>
+                </p>
+
+                <p class="time">
+                    <i class="far fa-clock"></i>
+                    expiration:
+                    <span class="time-lbl"><%= (user.reservation.expiration.str) ? user.reservation.expiration.str : ''  %></span>
+                </p>
+
+
+
+                <p class="duration">
+                    <i class="far fa-hourglass"></i>
+                    duration: 
+                    <span class="duration-lbl">
+                        <%= (user.reservation.duration) ? `${user.reservation.duration} min.` : '' %></span>
+                </p>
+
+
+                <% if (user.reservation.remainingTime.hour != undefined || user.reservation.excessTime.hour != undefined) { %>                  
+                        
+                    <% if (user.reservation.remainingTime.hour == 0 && user.reservation.remainingTime.min == 0 && user.reservation.remainingTime.sec == 0) { %>
+                        <p class="excess-time">
+                        <i class="fas fa-stopwatch"></i> excess time:
+                        <span class="excess-time-lbl">
+                                <%= `${user.reservation.excessTime.hour} :
+                                    ${user.reservation.excessTime.min} :
+                                    ${user.reservation.excessTime.sec}` %>
+                        </span>
+                        </p>
+                    <% } else { %>
+                        <p class="remaining-time">
+                        <i class="fas fa-stopwatch"></i> remaining time:
+                        <span class="remaining-time-lbl">
+                            <%= `${user.reservation.remainingTime.hour} :
+                                 ${user.reservation.remainingTime.min} :
+                                 ${user.reservation.remainingTime.sec}` %>
+                        </span>
+                        </p>
+                    <% } %>
+                <% } %>
+
+                <p class="slot">
+                    <i class="fas fa-car"></i>
+                    slot: <span class="slot-letter"><%= (user.reservation.slot) ? user.reservation.slot: '' %></span>
+                </p>
+            </div>
+        </div>
+
+
+    <% include ./partials/footer %>
+    </div>
+
+        <script>
+
+            var socket = io.connect('http://192.168.1.36:3000');
+
+
+
+            var modal = document.getElementById('modal');
+            var responseModalTag = document.querySelector('.response-modal-tag');
+            var remainingTimeBtn = document.querySelector('.remaining-time-btn');
+            var modalResponse = document.querySelector('.modal-response');
+            var reserveForm = document.getElementById('reserve-form');
+            var cont = document.getElementById('cont');
+            var balanceContainer = document.querySelector('.user-balance');
+            var reservationError = document.querySelector('.reservation-error');
+            var currentUser = document.querySelector('#username').textContent;
+
+            var username = '';
+            var slotLetter = '';
+
+
+
+            // listen to server for changes in the slots
+            socket.on('signalFromServer', (signal) => {
+                // if signal to refresh is true
+                if (signal.refresh) {
+
+                    // execute GET request
+                    $.ajax({
+                    type: 'GET',
+                    url: '/home',
+                    cache: false,
+                    success: function (result) {
+                        $('#cont').html($(result).find('#slot'));
+                        $('#modal').html($(result).find('.reservation-prompt'));
+                        $('.side').html($(result).find('.notif-slot, .notif-bal, .notif-reserve'));
+                    },
+                 });
+                }
+            })
+
+
+            
+            //show loading screen during request
+            $(document).ajaxStart(function () {
+                $(".overlay").show();
+            });
+
+
+
+            // hide loading screen after request
+            $(document).ajaxStop(function () {
+                $(".overlay").hide();
+            });
+
+
+            // refresh timer every 5 seconds
+            var timer1 = setTimeout(function refresh() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/home',
+                    cache: false,
+                    success: function (result) {
+                        $('.side').html($(result).find('.notif-slot, .notif-bal, .notif-reserve'));
+                        $(".overlay").hide();
+                    },
+                });
+                $(".overlay").hide();
+                timer1 = setTimeout(refresh, 5000);
+            }, 5000);
+
+
+
+            // listen to click events on the slot container
+            cont.addEventListener('click', function(event) {
+
+                // target the username and password element
+                var usernameElement = event.target.querySelector('#username');
+                var slotLetterElement = event.target.querySelector("#slotLetter");
+
+                // check if not null or clicking at the right place
+                if (usernameElement && slotLetterElement != null) {
+                    // save username and slot letter
+                    username = usernameElement.textContent;
+                    slotLetter = slotLetterElement.textContent;
+                    // view pop-up
+                    viewPrompt();
+                }
+
+                document.body.style.overflow = 'hidden';
+
+            }, false);
+
+
+            // toggle prompt
+            function viewPrompt() {
+                modal.style.display = 'block';
+                modal.style.zIndex = '1';
+                document.body.style.overflow = 'hidden';
+            }
+
+            // confirm reserve on slot
+            function confirm() {
+                // hide prompt
+                modal.style.display = 'none';
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/reserve',
+                    data: {
+                        requestFrom: 'user',
+                        username: username,
+                        slotLetter: slotLetter,
+                    },
+                    cache: false,
+                    success: function (res) {
+                        if (res.refresh) {
+                            // send a signal to server that someone' has reserved a slot
+                            socket.emit('signalFromClient', {reservation: true, slot: slotLetter});
+                        }
+                        modalResponse.style.display = 'block';
+                        modalResponse.style.zIndex = '1';
+                        responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.response}`;
+                        responseModalTag.style.fontSize = '1.5em';
+                        modalResponse.style.paddingTop = '8%';
+                        document.querySelector('body').style.overflow = 'hidden';
+                        document.getElementById('cancel').style.marginTop = '5%';
+                    }
+                })
+            }
+
+
+            // cancel reservation
+            function cancel() {
+                modal.style.display = 'none';
+                modalResponse.style.display = 'none';
+                // console.log(username);
+                // console.log(slotLetter);
+            }
+
+                if ( document.getElementById('close') != null) {
+                    document.getElementById('close').addEventListener('click', function() {
+                    reservationError.style.display = 'none';
+                })
+            }
+
+        </script>
+
+<% include ./partials/bottom %>

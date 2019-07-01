@@ -1,0 +1,334 @@
+<% include ./partials/admin_top %>
+    <div class="parent">
+
+        <% include ./partials/admin_nav %>
+
+        <div class="main bg-dark">
+            <div class="modal-response modal-cont modal-cont-admin">
+                <div class="prompt bg-dark">
+                    <p class="response-modal-tag modal-tag"></p>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> close</button>
+                </div>
+            </div>
+
+
+            <!-- MODAL FOR RESERVED OR OCCUPIED SLOT -->
+            <div class="modal-cont modal-cont-admin" id="modal">
+                <div class="prompt bg-dark">
+                    <p class="modal-tag slot-tag"></p>
+                    <p class="username-container"></p>
+                    <p class="fullname-container"></p>
+                    <p class="reservation-time-container"></p>
+                    <p class="expiration-container"></p>
+                    <p class="duration-container"></p>
+                    <p class="remaining-time-container"></p>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> close</button>
+                </div>
+            </div>
+            <!-- MODAL FOR RESERVATION -->
+
+
+            <!-- MODAL FOR RESERVATION -->
+            <div class="modal-cont modal-cont-admin modal-reservation">
+                <div class="prompt bg-dark">
+                    <p class="modal-tag"><i class="far fa-calendar-alt"></i> reserve slot for:</p>
+                    <div class="select-container">
+                    <select class="select" name="user">
+                            <% users.forEach(user => { %>
+                            <% if (!user.isAdmin) { %>
+                            <option value="<%= user.username %>">
+                                <%= user.username %>
+                            </option>
+                            <% } %>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <button id="confirm" onclick="confirm();"><i class="far fa-check-circle"></i> confirm</button>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> cancel</button>
+                </div>
+            </div>
+            <!-- MODAL FOR RESERVATION -->
+
+
+            <div class="parking-slot" id="cont">
+                <% slots.forEach(slot => { %>
+                <div class="slot" id="slot">
+                    <p class="letter" id='letter'>
+                        <%= slot.slotLetter %>
+                    </p>
+                    <div class="indicator bg-<%= slot.indicator %>-alpha" id="indicator">
+            
+                        
+                        <!-- RESERVATION TAG -->
+                        <% if (slot.state == 'vacant') { %>
+                        <p class="tag"><i class="fas fa-exclamation-circle"></i> click slot to reserve</p>
+                        <% } %> <!-- RESERVATION TAG -->
+
+                        
+                        <!-- EVERY SLOT's STATE -->
+                        <p class="state">
+
+                            <!-- VACANT STATE -->
+                            <% if (slot.state == 'vacant'){ %>
+                            <i class="far fa-check-circle"></i> vacant
+                            <span id="slotLetter" hidden><%= slot.slotLetter %></span>
+                            <form id="reserve-form" onsubmit="event.preventDefault()"></form>
+                            <!-- VACANT STATE -->
+            
+
+                            <!-- RESERVED or OCCUPIED STATE -->
+                            <% } else if (slot.state == 'reserved' || slot.state == 'occupied'){ %>
+                                <% if (slot.state == 'reserved') { %>
+                                    <i class="far fa-calendar-check"></i> reserved
+                                <% } else { %>
+                                    <i class="fas fa-car"></i> occupied
+                                <% } %>
+                            <span id="slotLetter" hidden><%= slot.slotLetter %></span>
+
+                            <!-- hidden elements -->
+                            <span class="parokyano" hidden><%= slot.parokya.username %></span>
+                            <span class="fullname" hidden>
+                                <%= `${slot.parokya.fname} ${slot.parokya.mi}. ${slot.parokya.lname}` %>
+                            </span>
+                            <span class="expiration" hidden><%= slot.parokya.reservation.expiration.str %></span>
+                            <span class="reservation-time" hidden><%= slot.parokya.reservation.time %></span>
+                            <span class="duration" hidden><%= slot.parokya.reservation.duration %></span>
+                            <% if (slot.parokya.reservation.remainingTime.hour != undefined || slot.parokya.reservation.excessTime.hour != undefined) { %>                  
+                        
+                                <% if (slot.parokya.reservation.remainingTime.hour == 0 && slot.parokya.reservation.remainingTime.min == 0 && slot.parokya.reservation.remainingTime.sec == 0) { %>
+                                    <p class="excess-time time" hidden>
+                                    <i class="fas fa-stopwatch"></i> excess time:
+                                    <span class="excess-time-lbl">
+                                            <%= `${slot.parokya.reservation.excessTime.hour} :
+                                                ${slot.parokya.reservation.excessTime.min} :
+                                                ${slot.parokya.reservation.excessTime.sec}` %>
+                                    </span>
+                                    </p>
+                                <% } else { %>
+                                    <p class="remaining-time time" hidden>
+                                    <i class="fas fa-stopwatch"></i> remaining time:
+                                    <span class="remaining-time-lbl">
+                                        <%= `${slot.parokya.reservation.remainingTime.hour} :
+                                             ${slot.parokya.reservation.remainingTime.min} :
+                                             ${slot.parokya.reservation.remainingTime.sec}` %>
+                                    </span>
+                                    </p>
+                                <% } %>
+                            <% } %>
+                            <!-- RESERVED STATE -->
+
+
+
+                            <% } else { %> 
+                            <i class="far fa-check-circle"></i> vacant
+                            <% } %>
+
+                            <span class="slotState" hidden><%= slot.state %></span>
+                        </p><!-- EVERY SLOT's STATE -->
+                        
+                    </div>
+            
+                </div>
+                <% }) %>
+            </div>
+
+            <% include ./partials/free_space %>
+        </div>
+
+        <div class="side side-admin bg-dark">
+            <div class="header">
+                <h2 class="bg-blue"><i class="fas fa-users"></i> user accounts</h2>
+            </div>
+
+            <div class="users-container">
+                <% users.forEach(user => { %>
+                    <% if (!user.isAdmin) { %>
+                        <div class="users">
+                            <a href="/admin/load/<%= user.username %>/" class="usernames">
+                                <i class="fas fa-user-ninja"></i>
+                                <%= user.username %>
+                            </a>
+                        </div>                       
+                    <% } %>
+                <% }) %>
+            </div>
+        </div>
+
+    <% include ./partials/footer %>
+    </div>
+
+    <script>
+
+        var socket = io.connect('http://192.168.1.36:3000');
+
+        // parent containers
+        var modal = document.getElementById('modal');
+        var cont = document.getElementById('cont');
+        var modalReservation = document.querySelector('.modal-reservation');
+        var modalResponse = document.querySelector('.modal-response');
+        var reserveForm = document.getElementById('reserve-form');
+        var responseModalTag = document.querySelector('.response-modal-tag');
+        
+        // target modal container elements
+        var modalTag = document.querySelector('.modal-tag');
+        var slotTag = document.querySelector('.slot-tag');
+        var parokyanoContainer = document.querySelector('.parokyano');
+        var usernameContainer = document.querySelector('.username-container');
+        var fullnameContainer = document.querySelector('.fullname-container');
+        var reservationTimeContainer = document.querySelector('.reservation-time-container');
+        var durationContainer = document.querySelector('.duration-container');
+        var remainingTimeContainer = document.querySelector('.remaining-time-container');
+        var expirationContainer = document.querySelector('.expiration-container');
+        var selectedItem = document.querySelector('.select');
+
+        var slotLetter = '';
+        var username = '';
+
+        // listen for a signal from the server to refresh 
+        socket.on('signalFromServer', (signal) => {
+            if (signal.refresh) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin',
+                    cache: false,
+                    success: function (result) {
+                        $('#cont').html($(result).find('#slot'));
+                    },
+                });
+            }
+        })
+
+
+        // refresh timer every 5 seconds
+        var timer1 = setTimeout(function refresh() {
+            $.ajax({
+                type: 'GET',
+                url: '/admin',
+                cache: false,
+                success: function (result) {
+                    $('#cont').html($(result).find('#slot'));
+                },
+            });
+            
+            $(".overlay").hide();
+            timer1 = setTimeout(refresh, 5000);
+        }, 5000);
+
+        // listen for click events on slots
+        cont.addEventListener('click', function(event) {
+            var slotStateEl = event.target.querySelector('.slotState');
+            var slotLetterEl = event.target.querySelector("#slotLetter");
+
+            if (slotStateEl != null && slotLetterEl != null) {
+                var slotState = slotStateEl.textContent;
+                slotLetter = slotLetterEl.textContent;
+
+                if (slotState == 'vacant') {
+                    modalReservation.style.display = 'block';
+                    modalReservation.style.zIndex = '99999';
+                }
+
+                if (slotState == 'reserved' || slotState == 'occupied') {
+
+                    // span hidden elements that holds the user's information
+                    var parokyanoElement = event.target.querySelector('.parokyano');
+                    var fullnameElement = event.target.querySelector('.fullname');
+                    var reservationTimeEl = event.target.querySelector('.reservation-time');
+                    var durationElement = event.target.querySelector('.duration');
+                    var expirationEl = event.target.querySelector('.expiration');
+
+                    var timeEl = event.target.querySelector('.time');
+                    var excessTimeEl = event.target.querySelector('.excess-time');
+
+                    var color = '';
+     
+                    // if time exceed change color
+                    if (excessTimeEl !== null) {
+                        color = '#FF554E';
+                    }
+
+                    // extracted information
+                    var fullname = fullnameElement.textContent;
+                    var reservationTime = reservationTimeEl.textContent;
+                    var parokyanoUsername = parokyanoElement.textContent;
+                    var duration = durationElement.textContent;
+                    var time = timeEl.textContent;
+                    // var remainingTime = remainingTimeEl.textContent;
+                    var expirationTime = expirationEl.textContent;
+
+                    // data to put to modal
+                    slotTag.innerHTML = `${(slotState === 'reserved') ? 
+                    '<i class="far fa-calendar-check"></i> reserved slot' : 
+                    '<i class="fas fa-car"></i> occupied slot'}`;
+
+                    usernameContainer.innerHTML = `<span class="modal-lbl">
+                                <i class="fas fa-user-tag"></i> username: 
+                                </span>${parokyanoUsername}`;
+
+                    fullnameContainer.innerHTML = `<span class="modal-lbl">
+                                <i class="fas fa-user-tie"></i> fullname: 
+                                </span>${fullname}`;
+
+                    reservationTimeContainer.innerHTML = `<span class="modal-lbl">
+                                    <i class="far fa-clock"></i> reservation time: 
+                                    </span>${reservationTime}`;
+                    
+                    expirationContainer.innerHTML =`<span class="modal-lbl">
+                                    <i class="far fa-clock"></i> expiration time: 
+                                    </span>${expirationTime}`;
+
+                    durationContainer.innerHTML = `<span class="modal-lbl">
+                                <i class="far fa-hourglass"></i> duration:
+                                </span>${duration} min.`;
+
+                    remainingTimeContainer.innerHTML = `<span class="modal-lbl" style="color: ${color}">
+                                    <i class="fas fa-stopwatch"></i>${time}
+                                    </span>`;
+                    modal.style.display = 'block';
+                    modal.style.zIndex = '99999';
+                }
+
+            } else {
+                console.log("You're not clicking at the right place");
+            }
+        }, false);
+
+
+        // confirm reserve on slot
+        function confirm() {
+            $.ajax({
+                type: 'POST',
+                data: {
+                    username: selectedItem.value,
+                    slotLetter: slotLetter,
+                },
+                url: '/reserve',
+                dataType: 'json',
+                cache: false,
+                success: function (res) {
+                    if (res.refresh) {
+                        socket.emit('signalFromClient', {reservation: true});
+                    }
+                    modalReservation.style.display = 'none';
+                    modalResponse.style.display = 'block';
+                    modalResponse.style.zIndex = '99999';
+                    responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.response}`;
+                    responseModalTag.style.fontSize = '1.5em';
+                    modalResponse.style.paddingTop = '8%';
+                    document.querySelector('body').style.overflow = 'hidden';
+                    document.getElementById('cancel').style.marginTop = '5%';
+                }
+            })
+        }
+
+        // cancel 
+        function cancel() {
+            modal.style.display = 'none';
+            modalReservation.style.display = 'none';
+            modalResponse.style.display = 'none';
+        }
+
+    </script>
+
+<% include ./partials/bottom %>

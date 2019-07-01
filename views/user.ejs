@@ -1,0 +1,299 @@
+
+<% include ./partials/admin_top %>
+    <div class="parent">
+       
+        <% include ./partials/admin_nav %>
+
+        <div class="main main-load bg-dark">
+
+            <div class="modal-cont" id="del-modal">
+                <div class="del-prompt bg-dark">
+                    <p class="del-tag"></p>
+                    <button id="delete" onclick="deleteUser()"><i class="far fa-check-circle"></i> delete</button>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> cancel</button>
+                </div>
+            </div>
+
+            <div class="modal-cont" id="modal">
+                <div class="prompt bg-dark">
+                    <p class="tag"></p>
+                    <button id="confirm" onclick="confirm()"><i class="far fa-check-circle"></i> confirm</button>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> cancel</button>
+                </div>
+            </div>
+
+            <div class="modal-response modal-cont modal-cont-admin">
+                <div class="prompt bg-dark">
+                    <p class="response-modal-tag modal-tag"></p>
+                    <button id="cancel" onclick="cancel()"><i class="far fa-times-circle"></i> close</button>
+                </div>
+            </div>
+
+            <div class="current-user-info">
+                <h2 class="heading bg-green"><i class="far fa-id-card"></i> user information
+                    <a href="/admin/<%= user.username %>/edit" class="edit">
+                        <i class="far fa-edit"></i>
+                        <span class="tooltip">edit user profile</span>
+                    </a>
+
+                    <a href="#" class="delete">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="tooltip">delete user</span>
+                    </a>
+                </h2>
+                
+                <p class="current-username">
+                    <span class="lbl"><i class="fas fa-user-tag"></i> username:</span>
+                    <%= user.username %>
+                </p>
+
+                <p class="name"><span class="lbl"><i class="fas fa-user-tie"></i> Name:</span> 
+                    <span class="name-lbl">
+                        <%= `${user.fname} ${user.mi}. ${user.lname}` %>
+                    </span>
+                </p>
+
+                <p class="balance">
+                    <% if (user.debt > 0) { %>
+                        <span class="lbl debt"><i class="fas fa-credit-card"></i> debt:</span>
+                        <span class="debt">P <%= user.debt %></span> 
+                    <% } else { %>
+                        <span class="lbl"><i class="fas fa-credit-card"></i> balance:</span> P <%= user.balance %>
+                    <% } %>
+                </p>
+
+                <% if (user.reservation.slot != undefined) {%>
+                <p class="reservation">
+                    <span class="lbl">
+                        <i class="fas fa-car"></i>
+                        reservation: 
+                    </span>reserved at slot <span class="slot-lbl"><%= `${user.reservation.slot}` %></span>
+                </p>
+
+                <% } else { %>
+                <p class="reservation"><span class="lbl"><i class="fas fa-car"></i> reservation:</span> none </p>
+                <% } %>
+
+                <p class="rfid"><span class="lbl"><i class="far fa-credit-card"></i> RFID:</span> <%= user.rfid %></p>
+
+                <p class="contact"><span class="lbl"><i class="fas fa-address-card"></i> contact:</span> <%= user.contact %></p>
+            </div>
+
+            <div class="loading-container">
+                <h2 class="heading bg-blue"><i class="fas fa-file-invoice-dollar"></i> loading form</h2>
+                <form id="loading-form" onsubmit="event.preventDefault()">
+                    <label class="amount-lbl">enter amount:</label>
+                    <input type="number" name="amount" id="amount-input">
+                    <span id="username" hidden><%= user.username %></span>
+                    <button id="load-button"><i class="fas fa-coins"></i> load</button>
+                </form>
+            </div>
+
+            <div class="change-rate-container">
+                <h2 class="heading bg-red"><i class="fas fa-database"></i> change rate</h2>
+
+                <form id="change-rate-form" onsubmit="event.preventDefault()">
+
+                    <label class="change-rate-lbl">rate / min</label>
+                    <input id="ratePerMin" name="ratePerMin" type="text" 
+                    value="<%= slotRate.ratePerMin %>"><br>
+            
+                    <label class="max-duration-lbl">max duration <span class="max-duration-unit">(min.)</span></label>
+                    <input id="maxDuration" name="maxDuration" type="number" min=0 
+                    value="<%= slotRate.maxDuration %>">
+            
+                    <label class="reservation-rate-lbl">reservation rate</label>
+                    <input id="reservationRate" name="reservationRate" type="number" min=0 
+                    value="<%= slotRate.reservationRate %>">
+            
+                    <button id="change-rate-btn">change parking rate</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="side side-admin bg-dark">
+            <div class="header">
+                <h2 class="bg-orange"><i class="fas fa-users"></i> user accounts</h2>
+            </div>
+        
+            <div class="users-container">
+                <% users.forEach(user => { %>
+                    <% if (!user.isAdmin) { %>
+                    <div class="users">
+                        <a href="/admin/load/<%= user.username %>/" class="usernames">
+                        <i class="fas fa-user-ninja"></i>
+                        <%= user.username %>
+                        </a>   
+                    </div>
+                    <% } %>
+                <% }) %>
+            </div>
+        </div>
+
+    
+    <% include ./partials/footer %>
+    </div>
+
+    <script>
+
+        var socket = io.connect('http://192.168.1.36:3000');
+
+        // Prompts and modals
+        var modal = document.getElementById('modal');
+        var modalTagContainer = document.querySelector('.tag');
+        var modalResponse = document.querySelector('.modal-response');
+        var responseModalTag = document.querySelector('.response-modal-tag');
+
+        // elements for loading user
+        var loadingForm = document.getElementById('loading-form');
+        var amountInput = document.getElementById('amount-input');
+        var loadBtn = document.getElementById('load-button');
+        var username = document.getElementById('username');
+
+        // elements for changing parking rate
+        var ratePerMinInput = document.getElementById('ratePerMin');
+        var maxDurationInput = document.getElementById('maxDuration');
+        var reservationRateInput = document.getElementById('reservationRate');
+        var changeRateBtn = document.getElementById('change-rate-btn');
+
+
+        // element for deleting user
+        var delModal = document.querySelector('#del-modal');
+        var delTag = document.querySelector('.del-tag');
+        var deleteLink = document.querySelector('.delete');
+
+        // label for responses
+        var origin = '';
+
+
+        // socket listening from server
+        socket.on('signalFromServer', (signal) => {
+            if (signal.refresh) {
+                $.ajax({
+                    type: 'GET',
+                    cache: false,
+                    success: function(res) {
+                        $('.balance').html($(res).find('.balance'));
+                    }
+                });
+            }
+        })
+
+
+        deleteLink.addEventListener('click', function() {
+            delTag.innerHTML = `Are you sure you want to delete the account of ${username.textContent}? `;
+
+            delModal.style.display = 'block';
+            delModal.style.zIndex = '1';
+            document.body.style.overflow = 'hidden';
+        })
+
+        // load button
+        loadBtn.addEventListener('click', function () {
+
+            modalTagContainer.innerHTML = `<i class="fas fa-coins"></i> Load
+                                            P${(amountInput.value) ? amountInput.value : 0} 
+                                            to ${username.textContent}? `;
+
+            modal.style.display = 'block';
+            modal.style.zIndex = '1';
+            document.body.style.overflow = 'hidden';
+        }, false)
+
+
+        // change rate
+        changeRateBtn.addEventListener('click', function() {    
+            $.ajax({
+                type: 'POST',
+                url: '/admin/change_rate',
+                data: {
+                    ratePerMin: ratePerMinInput.value,
+                    maxDuration: maxDurationInput.value,
+                    reservationRate: reservationRateInput.value,
+                },
+                cache: false,
+                success: function(res) {
+                    if (res.slotRate === 'changed') {
+                        modalResponse.style.display = 'block';
+                        modalResponse.style.zIndex = '1';
+                        responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
+                        responseModalTag.style.fontSize = '1.5em';
+                        modalResponse.style.paddingTop = '15%';
+                        document.querySelector('body').style.overflow = 'hidden';
+                        document.getElementById('cancel').style.marginTop = '5%';
+
+                        socket.emit('signalFromClient', {changedRate: true});
+                    }
+
+                }
+            })
+        })
+        
+
+        // delete user account
+        function deleteUser() {
+            delModal.style.display = 'none';
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/delete',
+                data: {
+                    username: username.textContent,
+                },
+                cache: false,
+                success: function(res) {
+                    modalResponse.style.display = 'block';
+                    modalResponse.style.zIndex = '1';
+                    responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
+                    responseModalTag.style.fontSize = '1.5em';
+                    modalResponse.style.paddingTop = '15%';
+                    document.querySelector('body').style.overflow = 'hidden';
+                    document.getElementById('cancel').style.marginTop = '5%';
+                    origin = 'fromDelete';
+                }
+            })
+        }
+
+        // confirm loading account
+        function confirm() {
+            modal.style.display = 'none';
+            $.ajax({
+                type: 'POST',
+                url: '/admin/load',
+                data: {
+                    username: username.textContent,
+                    amount: amountInput.value,
+                },
+                cache: false,
+                success: function (res) {
+                    
+                    if (res.success) {
+                        //send a signal to server that a user is loaded
+                        socket.emit('signalFromAdmin', { isLoaded: true });
+                    }
+                    modalResponse.style.display = 'block';
+                    modalResponse.style.zIndex = '1';
+                    responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
+                    responseModalTag.style.fontSize = '1.5em';
+                    modalResponse.style.paddingTop = '15%';
+                    document.querySelector('body').style.overflow = 'hidden';
+                    document.getElementById('cancel').style.marginTop = '5%';
+                }
+            })
+        }
+
+        // cancel loading
+        function cancel() {
+            if (origin === 'fromDelete') {
+                delModal.style.display = 'none';
+                window.location.href = '/admin/home';
+            }
+            modal.style.display = 'none';
+            modalResponse.style.display = 'none';
+            delModal.style.display = 'none';
+        }
+
+    </script>
+
+<% include ./partials/bottom %>
