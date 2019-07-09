@@ -707,6 +707,7 @@ io.on('connection', (socket) => {
                         {
                             refresh: true,
                             vacant: true,
+                            slot: slot.slotLetter,
                         });
                 }
             })
