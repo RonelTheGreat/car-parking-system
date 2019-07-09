@@ -706,8 +706,6 @@ io.on('connection', (socket) => {
                     io.sockets.emit('signalFromServer',
                         {
                             refresh: true,
-                            vacant: true,
-                            slot: slot.slotLetter,
                         });
                 }
             })
