@@ -703,7 +703,11 @@ io.on('connection', (socket) => {
                     slot.parokya.save();
 
                     // send update to all connected devices
-                    io.sockets.emit('signalFromServer', { refresh: true });
+                    io.sockets.emit('signalFromServer',
+                        {
+                            refresh: true,
+                            vacant: true,
+                        });
                 }
             })
 
