@@ -36,7 +36,7 @@ function updateTime (){
                         slot.indicator = 'green';
                         slot.save();
 
-                        io.sockets.emit('signalFromServer', {refresh: true});
+                        io.sockets.emit('signalFromServer', {refresh: true, vacant: true, slot: slot.slotLetter});
 
                     } else if (slot.state === 'occupied') {
                         let excess = excessTime(new Date(expiration).getTime());
