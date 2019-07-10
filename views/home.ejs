@@ -314,8 +314,7 @@
             function cancel() {
                 modal.style.display = 'none';
                 modalResponse.style.display = 'none';
-                // console.log(username);
-                // console.log(slotLetter);
+                socket.emit('signalFromClient', {isCurrentlyReserving: false, slot: slotLetter});
             }
 
                 if ( document.getElementById('close') != null) {
