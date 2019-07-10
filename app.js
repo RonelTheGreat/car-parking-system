@@ -653,34 +653,6 @@ io.on('connection', (socket) => {
         } else if (signal.changedRate) {
             io.sockets.emit('signalFromServer', {refresh: true});
 
-        } else if (signal.isCurrentlyReserving) {
-
-            Slot.findOne({slotLetter: signal.slot}, (err, slot) => {
-                if (err) return console.log('error finding slot');
-
-                slot.state = 'reserved';
-                slot.indicator = 'orange';
-                slot.save();
-                io.sockets.emit('signalFromServer', 
-                    {
-                        refresh: true,
-                    });
-            })
-
-        // if cancelled on reserving
-        } else if (!signal.isCurrentlyReserving) {
-            Slot.findOne({slotLetter: signal.slot}, (err, slot) => {
-
-                if (err) return console.log('error finding slot');
-
-                slot.state = 'vacant';
-                slot.indicator = 'green';
-                slot.save();
-                io.sockets.emit('signalFromServer', 
-                    {
-                        refresh: true,
-                    });             
-            })
         }
     })
 
