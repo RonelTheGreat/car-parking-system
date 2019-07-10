@@ -177,6 +177,11 @@ app.post('/reserve', (req, res) => {
 
             if (err) return console.log('Something went wrong');
 
+            // check if the state is occupied
+            if (slot.state == 'reserved' || slot.state == 'occupied') {
+                return res.json({ response: 'someone has reserved this slot' });
+            }
+
             // check if BALANCE is 0 or less than slot reservation rate
             if (user.balance == 0 || user.balance < slot.slotRate.reservationRate) {
                 if (requestFrom === 'user') {
@@ -193,11 +198,6 @@ app.post('/reserve', (req, res) => {
                 } else {
                     return res.json({response: `can't reserve because ${username} have an active subscription`});
                 }       
-            }
-
-            // check if the state is occupied
-            if (slot.state == 'reserved' || slot.state == 'occupied') {
-                return res.json({response: 'someone has reserved this slot'});
             }
 
             // if nothing fails above, time to save it to the DB
