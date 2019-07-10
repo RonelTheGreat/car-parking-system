@@ -276,7 +276,7 @@
                 modal.style.display = 'block';
                 modal.style.zIndex = '1';
                 document.body.style.overflow = 'hidden';
-                socket.emit('signalFromClient', {isCurrentlyReserving: true, slot: slotLetter});
+                // socket.emit('signalFromClient', {isCurrentlyReserving: true, slot: slotLetter});
             }
 
             // confirm reserve on slot
@@ -314,7 +314,7 @@
             function cancel() {
                 modal.style.display = 'none';
                 modalResponse.style.display = 'none';
-                socket.emit('signalFromClient', {isCurrentlyReserving: false, slot: slotLetter});
+                // socket.emit('signalFromClient', {isCurrentlyReserving: false, slot: slotLetter});
             }
 
                 if ( document.getElementById('close') != null) {
