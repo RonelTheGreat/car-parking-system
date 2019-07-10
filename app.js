@@ -683,7 +683,6 @@ io.on('connection', (socket) => {
                     {
                         refresh: true, 
                         vacant: true, 
-                        isCurrentlyReserving: true, 
                         slot: signal.slot
                     });             
             })
