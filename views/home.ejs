@@ -216,7 +216,7 @@
                     },
                  });
                 } else if (signal.isCurrentlyReserving) {
-                    console.log('someone is currently reserving this slot');
+                    console.log(`Someone is currently reserving slot ${signal.slot}`);
                 }
             })
 
@@ -278,7 +278,7 @@
                 modal.style.display = 'block';
                 modal.style.zIndex = '1';
                 document.body.style.overflow = 'hidden';
-                socket.emit('signalFromClient', {isCurrentlyReserving: true});
+                socket.emit('signalFromClient', {isCurrentlyReserving: true, slot: slotLetter});
             }
 
             // confirm reserve on slot
