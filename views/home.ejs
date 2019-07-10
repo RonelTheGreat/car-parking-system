@@ -258,7 +258,7 @@
                 var slotLetterElement = event.target.querySelector("#slotLetter");
 
                 // check if not null or clicking at the right place
-                if ((usernameElement && slotLetterElement != null) && !isCurrentlyReserving) {
+                if (usernameElement && slotLetterElement != null) {
                     // save username and slot letter
                     username = usernameElement.textContent;
                     slotLetter = slotLetterElement.textContent;
