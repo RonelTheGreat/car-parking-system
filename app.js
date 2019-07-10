@@ -681,9 +681,7 @@ io.on('connection', (socket) => {
                 slot.save();
                 io.sockets.emit('signalFromServer', 
                     {
-                        refresh: true, 
-                        vacant: true, 
-                        slot: signal.slot
+                        refresh: true,
                     });             
             })
         }
