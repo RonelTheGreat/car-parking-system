@@ -308,7 +308,7 @@
                 cache: false,
                 success: function (res) {
                     if (res.refresh) {
-                        socket.emit('signalFromClient', {reservation: true});
+                        socket.emit('signalFromClient', {reservation: true, slot: slotLetter});
                     }
                     modalReservation.style.display = 'none';
                     modalResponse.style.display = 'block';
