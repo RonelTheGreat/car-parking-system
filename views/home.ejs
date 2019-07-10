@@ -316,6 +316,7 @@
 
             // cancel reservation
             function cancel() {
+                isCurrentlyReserving = false;
                 modal.style.display = 'none';
                 modalResponse.style.display = 'none';
                 // console.log(username);
