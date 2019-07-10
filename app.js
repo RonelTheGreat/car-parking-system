@@ -664,9 +664,7 @@ io.on('connection', (socket) => {
                 io.sockets.emit('signalFromServer', 
                     {
                         refresh: true, 
-                        reserved: true, 
                         isCurrentlyReserving: true, 
-                        slot: signal.slot
                     });
             })
 
