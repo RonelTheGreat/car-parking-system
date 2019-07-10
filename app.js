@@ -651,6 +651,8 @@ io.on('connection', (socket) => {
             io.sockets.emit('signalFromServer', {refresh: true, reserved: true, slot: signal.slot});
         } else if (signal.changedRate) {
             io.sockets.emit('signalFromServer', {refresh: true});
+        } else if (signal.isCurrentlyReserving) {
+            io.sockets.emit('signalFromServer', {isCurrentlyReserving: true});
         }
     })
 
