@@ -20,7 +20,7 @@ const createAdmin   = require('./bin/create-admin'),
       io            = require('socket.io')(http);
 
 
-// reset();
+reset();
 
 // update slot timer every 5 sec
 let timer1 = setTimeout(function update() {
@@ -781,7 +781,7 @@ io.on('connection', (socket) => {
 // server listener
 const PORT = process.env.PORT || 3000;
 
-let server = http.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log('Listening to PORT: ' + PORT);
 });
 
