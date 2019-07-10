@@ -215,6 +215,8 @@
                         $('.side').html($(result).find('.notif-slot, .notif-bal, .notif-reserve'));
                     },
                  });
+                } else if (signal.isCurrentlyReserving) {
+                    console.log('someone is currently reserving this slot');
                 }
             })
 
@@ -276,6 +278,7 @@
                 modal.style.display = 'block';
                 modal.style.zIndex = '1';
                 document.body.style.overflow = 'hidden';
+                socket.emit('signalFromClient', {isCurrentlyReserving: true});
             }
 
             // confirm reserve on slot
