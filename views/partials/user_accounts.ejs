@@ -1,0 +1,12 @@
+<div class="users-container">
+    <% users.forEach(user => { %>
+        <% if (!user.isAdmin) { %>
+        <div class="users">
+            <a href="/admin/load/<%= user.username %>/" class="usernames">
+            <i class="fas fa-user-ninja"></i>
+            <%= user.username %>
+            </a>   
+        </div>
+        <% } %>
+    <% }) %>
+</div>
