@@ -3,13 +3,8 @@
 
     <div class="parent" id="parent">
         <div class="nav bg-dark">
-            <div class="brand">
-                <p><i class="fas fa-car"></i>
-                    <span style="color: #29CA41;">park</span>ya
-                    <span style="color: #00AAFF;">ni</span>  
-                    <span style="color: #FFBD2E;">ed car</span>
-                </p>
-            </div>
+            
+            <% include ./partials/brand %>
 
             <div class="user-info">
                 <p>
@@ -26,7 +21,6 @@
 
             <div class="overlay">
                 <div class="loading-screen">
-                    <!-- <span class="loading-lbl">processing request</span><br> -->
                     <div class="lds-roller">
                         <div></div>
                         <div></div>
@@ -86,8 +80,10 @@
                         </p>
 
                         <span id="username" hidden><%= user.username %></span>
+                        <span id="id" hidden><%= user._id %></span>
+                        
                     </div>
-            
+                    <p class="tagline-reserve"></p>
                 </div>
                 <% }) %>
             </div>
@@ -180,8 +176,8 @@
 
         <script>
 
-            var socket = io.connect('https://parkya.herokuapp.com/');
-
+            // var socket = io.connect('https://parkya.herokuapp.com/');
+            var socket = io.connect('http://192.168.1.16:3000');
 
 
             var modal = document.getElementById('modal');
@@ -190,13 +186,9 @@
             var modalResponse = document.querySelector('.modal-response');
             var reserveForm = document.getElementById('reserve-form');
             var cont = document.getElementById('cont');
-            var balanceContainer = document.querySelector('.user-balance');
-            var reservationError = document.querySelector('.reservation-error');
-            var currentUser = document.querySelector('#username').textContent;
 
             var username = '';
             var slotLetter = '';
-
 
 
             // listen to server for changes in the slots
@@ -215,7 +207,45 @@
                         $('.side').html($(result).find('.notif-slot, .notif-bal, .notif-reserve'));
                     },
                  });
+
                 }
+            })
+
+
+            // listen if someone is actively making a reservation
+            socket.on('activelyReserving', (data) => {
+                // grab all slots
+                let slots  = document.querySelectorAll('.slot');
+
+                // loop through each slot
+                slots.forEach(slot => {
+                    // grab slot letter element
+                    const letter = slot.children[0].innerText;
+                    let tagLine = slot.lastElementChild;
+
+                    if (letter.toLowerCase() === data.slot) {
+
+                        // if someone is actively reserving
+                        // hide indicator so that it is not clickable
+                        // flash a message that someone is reserving the slot
+                        if (data.isReserving) {
+                            slot.children[1].style.zIndex = '-1';
+                            tagLine.innerHTML = 'reserving a user <i class="fas fa-car"></i>';
+                            tagLine.style.textAlign = 'center';
+                            tagLine.style.position = 'absolute';
+                            tagLine.style.bottom = '-6%';
+                            
+
+                        // if the user cancel reservation, return to original state
+                        } else {
+                            tagLine.style.color = '#141D26';
+                            tagLine.textContent = '';
+                            slot.children[1].style.zIndex = '';
+                        }
+                    }
+
+                    tagLine.style.color = '#EFF2F7';
+                })
             })
 
 
@@ -262,6 +292,15 @@
                     // save username and slot letter
                     username = usernameElement.textContent;
                     slotLetter = slotLetterElement.textContent;
+
+                    // emit that someone is actively reserving
+                    socket.emit('activelyReserving', 
+                        {
+                            isReserving: true,
+                            slot: slotLetter,
+                        }
+                    );
+
                     // view pop-up
                     viewPrompt();
                 }
@@ -275,7 +314,7 @@
             function viewPrompt() {
                 modal.style.display = 'block';
                 modal.style.zIndex = '1';
-                document.body.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';     
             }
 
             // confirm reserve on slot
@@ -313,12 +352,7 @@
             function cancel() {
                 modal.style.display = 'none';
                 modalResponse.style.display = 'none';
-            }
-
-                if ( document.getElementById('close') != null) {
-                    document.getElementById('close').addEventListener('click', function() {
-                    reservationError.style.display = 'none';
-                })
+                socket.emit('activelyReserving', {isReserving: false, slot: slotLetter});
             }
 
         </script>
