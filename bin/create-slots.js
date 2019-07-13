@@ -1,6 +1,9 @@
 const Slot = require('../models/Slot');
 
+// create slots
 let createSlots = () => {
+
+    // define slot letter, indicator and state
     let slots = [
         {
             slotLetter: 'a',
@@ -24,6 +27,7 @@ let createSlots = () => {
         }
     ]
     
+    // loop through slots and save to DB
     slots.forEach(slot => {
         Slot.create(slot, (err, newSlot) => {
             console.log('NEW SLOT IS CREATED: ')
