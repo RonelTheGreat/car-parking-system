@@ -117,18 +117,7 @@
                 <h2 class="bg-orange"><i class="fas fa-users"></i> user accounts</h2>
             </div>
         
-            <div class="users-container">
-                <% users.forEach(user => { %>
-                    <% if (!user.isAdmin) { %>
-                    <div class="users">
-                        <a href="/admin/load/<%= user.username %>/" class="usernames">
-                        <i class="fas fa-user-ninja"></i>
-                        <%= user.username %>
-                        </a>   
-                    </div>
-                    <% } %>
-                <% }) %>
-            </div>
+            <% include ./partials/user_accounts %>
         </div>
 
     
