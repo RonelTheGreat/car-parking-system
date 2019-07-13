@@ -13,8 +13,7 @@ var slotSchema = new mongoose.Schema({
         ratePerMin: Number,
         maxDuration: Number,
         reservationRate: Number,
-    }
-
+    },
 });
 
 module.exports = mongoose.model('Slot', slotSchema);
