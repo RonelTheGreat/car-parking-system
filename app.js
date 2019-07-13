@@ -4,7 +4,6 @@ const createAdmin   = require('./bin/create-admin'),
       updateTime    = require('./bin/update-time'),
       bodyParser    = require('body-parser'),
       formatTime    = require('./bin/format-time'),
-      excessTime    = require('./bin/excess-time'),
       validator     = require('express-validator'),
       mongoose      = require('mongoose'),
       session       = require('express-session'),
@@ -191,7 +190,7 @@ app.post('/reserve', (req, res) => {
                 }
             }
 
-            // check if valid slot
+            // check if slot is valid
             if (user.reservation.slot != undefined) {
                 if (requestFrom === 'user') {
                     return res.json({response: "can't reserve because you have an active subscription"}); 
@@ -204,7 +203,7 @@ app.post('/reserve', (req, res) => {
             // set the date today
             let date = new Date();
 
-            // calculate expiration date and time
+            // calculate expiration date and time from the date above
             let expiration = calcExp(date, slot.slotRate.maxDuration);
             
             // formatted time e.g 12:00 PM
@@ -654,6 +653,17 @@ io.on('connection', (socket) => {
             io.sockets.emit('signalFromServer', {refresh: true});
 
         }
+    })
+
+
+    // listen for a signal when someone is actively reserving
+    socket.on('activelyReserving', (data) => {
+
+        if (data.isReserving) {
+            socket.broadcast.emit('activelyReserving', {isReserving: true, slot: data.slot});
+        } else {
+            socket.broadcast.emit('activelyReserving', {isReserving: false, slot: data.slot});
+        }   
     })
 
 
