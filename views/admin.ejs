@@ -58,8 +58,7 @@
                         <%= slot.slotLetter %>
                     </p>
                     <div class="indicator bg-<%= slot.indicator %>-alpha" id="indicator">
-            
-                        
+
                         <!-- RESERVATION TAG -->
                         <% if (slot.state == 'vacant') { %>
                         <p class="tag"><i class="fas fa-exclamation-circle"></i> click slot to reserve</p>
@@ -94,28 +93,8 @@
                             <span class="expiration" hidden><%= slot.parokya.reservation.expiration.str %></span>
                             <span class="reservation-time" hidden><%= slot.parokya.reservation.time %></span>
                             <span class="duration" hidden><%= slot.parokya.reservation.duration %></span>
-                            <% if (slot.parokya.reservation.remainingTime.hour != undefined || slot.parokya.reservation.excessTime.hour != undefined) { %>                  
-                        
-                                <% if (slot.parokya.reservation.remainingTime.hour == 0 && slot.parokya.reservation.remainingTime.min == 0 && slot.parokya.reservation.remainingTime.sec == 0) { %>
-                                    <p class="excess-time time" hidden>
-                                    <i class="fas fa-stopwatch"></i> excess time:
-                                    <span class="excess-time-lbl">
-                                            <%= `${slot.parokya.reservation.excessTime.hour} :
-                                                ${slot.parokya.reservation.excessTime.min} :
-                                                ${slot.parokya.reservation.excessTime.sec}` %>
-                                    </span>
-                                    </p>
-                                <% } else { %>
-                                    <p class="remaining-time time" hidden>
-                                    <i class="fas fa-stopwatch"></i> remaining time:
-                                    <span class="remaining-time-lbl">
-                                        <%= `${slot.parokya.reservation.remainingTime.hour} :
-                                             ${slot.parokya.reservation.remainingTime.min} :
-                                             ${slot.parokya.reservation.remainingTime.sec}` %>
-                                    </span>
-                                    </p>
-                                <% } %>
-                            <% } %>
+                            <span id="time" hidden></span>
+                            <span id="isExcess" hidden>false</span>
                             <!-- RESERVED STATE -->
 
 
@@ -126,9 +105,8 @@
 
                             <span class="slotState" hidden><%= slot.state %></span>
                         </p><!-- EVERY SLOT's STATE -->
-                        
                     </div>
-            
+                    <p class="tagline-reserve"></p>
                 </div>
                 <% }) %>
             </div>
@@ -141,18 +119,7 @@
                 <h2 class="bg-blue"><i class="fas fa-users"></i> user accounts</h2>
             </div>
 
-            <div class="users-container">
-                <% users.forEach(user => { %>
-                    <% if (!user.isAdmin) { %>
-                        <div class="users">
-                            <a href="/admin/load/<%= user.username %>/" class="usernames">
-                                <i class="fas fa-user-ninja"></i>
-                                <%= user.username %>
-                            </a>
-                        </div>                       
-                    <% } %>
-                <% }) %>
-            </div>
+            <% include ./partials/user_accounts %>
         </div>
 
     <% include ./partials/footer %>
@@ -160,7 +127,8 @@
 
     <script>
 
-        var socket = io.connect('https://parkya.herokuapp.com/');
+        // var socket = io.connect('https://parkya.herokuapp.com/');
+        var socket = io.connect('http://192.168.1.16:3000');
 
         // parent containers
         var modal = document.getElementById('modal');
@@ -180,10 +148,12 @@
         var durationContainer = document.querySelector('.duration-container');
         var remainingTimeContainer = document.querySelector('.remaining-time-container');
         var expirationContainer = document.querySelector('.expiration-container');
+        var isExcessContainer = document.querySelector('#isExcess') !== null && document.querySelector('#isExcess');
         var selectedItem = document.querySelector('.select');
 
         var slotLetter = '';
         var username = '';
+
 
         // listen for a signal from the server to refresh 
         socket.on('signalFromServer', (signal) => {
@@ -194,26 +164,79 @@
                     cache: false,
                     success: function (result) {
                         $('#cont').html($(result).find('#slot'));
+                        isExcessContainer.textContent = 'false';
                     },
                 });
             }
         })
 
 
-        // refresh timer every 5 seconds
-        var timer1 = setTimeout(function refresh() {
-            $.ajax({
-                type: 'GET',
-                url: '/admin/home',
-                cache: false,
-                success: function (result) {
-                    $('#cont').html($(result).find('#slot'));
-                },
-            });
-            
-            $(".overlay").hide();
-            timer1 = setTimeout(refresh, 5000);
-        }, 5000);
+        // remaining and excess time listener
+        socket.on('updateTimeEvent', time => {
+
+            let slots = document.querySelectorAll('.state');
+
+            // loop through each slot
+            slots.forEach(slot => {
+                // grab username for a specific slot
+                if (slot.children[2] !== undefined) {
+
+                    let username = slot.children[2].innerText;
+
+                    if (time.username === username) {
+
+                        if (!time.isExcess) {
+                            let { hour, min, sec } = time.remaining;
+                            slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
+                        } else {
+                            let { hour, min, sec } = time.excess;
+                            slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
+                            isExcessContainer.textContent = 'true';
+                        }
+                    }
+                }
+            })
+        })
+
+
+
+            // listen if someone is actively making a reservation
+        socket.on('activelyReserving', (data) => {
+            // grab all slots
+            let slots = document.querySelectorAll('.slot');
+
+            // loop through each slot
+            slots.forEach(slot => {
+                // grab slot letter element
+                const letter = slot.children[0].innerText;
+                let tagLine = slot.lastElementChild;
+
+                if (letter.toLowerCase() === data.slot) {
+
+                    // if someone is actively reserving
+                    // hide indicator so that it is not clickable
+                    // flash a message that someone is reserving the slot
+                    if (data.isReserving) {
+                        slot.children[1].style.zIndex = '-1';
+                        tagLine.innerHTML = 'reserving a user <i class="fas fa-car"></i>';
+                        tagLine.style.textAlign = 'center';
+                        tagLine.style.position = 'absolute';
+                        tagLine.style.bottom = '-6%';
+
+
+                        // if the user cancel reservation, return to original state
+                    } else {
+                        tagLine.style.color = '#141D26';
+                        tagLine.textContent = '';
+                        slot.children[1].style.zIndex = '';
+                    }
+                }
+
+                tagLine.style.color = '#EFF2F7';
+            })
+        })
+
+
 
         // listen for click events on slots
         cont.addEventListener('click', function(event) {
@@ -225,6 +248,13 @@
                 slotLetter = slotLetterEl.textContent;
 
                 if (slotState == 'vacant') {
+                    // emit that someone is actively reserving
+                     socket.emit('activelyReserving', 
+                        {
+                            isReserving: true,
+                            slot: slotLetter,
+                        }
+                    );
                     modalReservation.style.display = 'block';
                     modalReservation.style.zIndex = '99999';
                 }
@@ -237,25 +267,17 @@
                     var reservationTimeEl = event.target.querySelector('.reservation-time');
                     var durationElement = event.target.querySelector('.duration');
                     var expirationEl = event.target.querySelector('.expiration');
-
-                    var timeEl = event.target.querySelector('.time');
+                    var timeEl = event.target.querySelector('#time');
                     var excessTimeEl = event.target.querySelector('.excess-time');
-
-                    var color = '';
-     
-                    // if time exceed change color
-                    if (excessTimeEl !== null) {
-                        color = '#FF554E';
-                    }
 
                     // extracted information
                     var fullname = fullnameElement.textContent;
                     var reservationTime = reservationTimeEl.textContent;
-                    var parokyanoUsername = parokyanoElement.textContent;
+                    var parokyanoUsername = parokyanoElement.innerText;
                     var duration = durationElement.textContent;
                     var time = timeEl.textContent;
                     // var remainingTime = remainingTimeEl.textContent;
-                    var expirationTime = expirationEl.textContent;
+                    var expirationTime = expirationEl.textContent;  
 
                     // data to put to modal
                     slotTag.innerHTML = `${(slotState === 'reserved') ? 
@@ -282,9 +304,10 @@
                                 <i class="far fa-hourglass"></i> duration:
                                 </span>${duration} min.`;
 
-                    remainingTimeContainer.innerHTML = `<span class="modal-lbl" style="color: ${color}">
-                                    <i class="fas fa-stopwatch"></i>${time}
-                                    </span>`;
+                    remainingTimeContainer.innerHTML = `<span class="modal-lbl" 
+                    style="color: ${isExcess == 'true' ? '#FF554E' : ''}">
+                                <i class="fas fa-stopwatch"></i>${isExcess == 'true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
+   
                     modal.style.display = 'block';
                     modal.style.zIndex = '99999';
                 }
@@ -322,11 +345,13 @@
             })
         }
 
+
         // cancel 
         function cancel() {
             modal.style.display = 'none';
             modalReservation.style.display = 'none';
             modalResponse.style.display = 'none';
+            socket.emit('activelyReserving', {isReserving: false, slot: slotLetter});
         }
 
     </script>
