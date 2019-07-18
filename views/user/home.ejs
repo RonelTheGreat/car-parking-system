@@ -1,10 +1,10 @@
-<% include ./partials/user_top %>
+<% include ../partials/user_top %>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <div class="parent" id="parent">
         <div class="nav bg-dark">
             
-            <% include ./partials/brand %>
+            <% include ../partials/brand %>
 
             <div class="user-info">
                 <p>
@@ -88,7 +88,7 @@
                 <% }) %>
             </div>
 
-            <% include ./partials/free_space %>
+            <% include ../partials/free_space %>
         </div>
         
         <div class="side">
@@ -171,12 +171,13 @@
         </div>
 
 
-    <% include ./partials/footer %>
+    <% include ../partials/footer %>
     </div>
 
         <script>
 
-            var socket = io.connect('https://parkya.herokuapp.com/');
+            // var socket = io.connect('https://parkya.herokuapp.com/');
+            var socket = io.connect('http://192.168.1.16:3000');
 
 
             var modal = document.getElementById('modal');
@@ -297,6 +298,7 @@
                         {
                             isReserving: true,
                             slot: slotLetter,
+                            username: username,
                         }
                     );
 
@@ -335,6 +337,7 @@
                             // send a signal to server that someone' has reserved a slot
                             socket.emit('signalFromClient', {reservation: true, slot: slotLetter});
                         }
+
                         modalResponse.style.display = 'block';
                         modalResponse.style.zIndex = '1';
                         responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.response}`;
@@ -351,9 +354,9 @@
             function cancel() {
                 modal.style.display = 'none';
                 modalResponse.style.display = 'none';
-                socket.emit('activelyReserving', {isReserving: false, slot: slotLetter});
+                socket.emit('activelyReserving', {isReserving: false, slot: slotLetter, username: username});
             }
 
         </script>
 
-<% include ./partials/bottom %>
+<% include ../partials/bottom %>

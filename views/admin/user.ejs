@@ -1,8 +1,8 @@
 
-<% include ./partials/admin_top %>
+<% include ../partials/admin_top %>
     <div class="parent">
        
-        <% include ./partials/admin_nav %>
+        <% include ../partials/admin_nav %>
 
         <div class="main main-load bg-dark">
 
@@ -117,16 +117,17 @@
                 <h2 class="bg-orange"><i class="fas fa-users"></i> user accounts</h2>
             </div>
         
-            <% include ./partials/user_accounts %>
+            <% include ../partials/user_accounts %>
         </div>
 
     
-    <% include ./partials/footer %>
+    <% include ../partials/footer %>
     </div>
 
     <script>
 
-        var socket = io.connect('https://parkya.herokuapp.com/');
+        // var socket = io.connect('https://parkya.herokuapp.com/');
+        var socket = io.connect('http://192.168.1.16:3000');
 
         // Prompts and modals
         var modal = document.getElementById('modal');
@@ -285,4 +286,4 @@
 
     </script>
 
-<% include ./partials/bottom %>
+<% include ../partials/bottom %>

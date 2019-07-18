@@ -1,7 +1,7 @@
-<% include ./partials/admin_top %>
+<% include ../partials/admin_top %>
     <div class="parent">
 
-        <% include ./partials/admin_nav %>
+        <% include ../partials/admin_nav %>
 
         <div class="main bg-dark">
             <div class="modal-response modal-cont modal-cont-admin">
@@ -33,7 +33,8 @@
                 <div class="prompt bg-dark">
                     <p class="modal-tag"><i class="far fa-calendar-alt"></i> reserve slot for:</p>
                     <div class="select-container">
-                    <select class="select" name="user">
+                    <select class="select" name="user" onchange=selectUser(event)>
+                            <option value="">Select User</option>
                             <% users.forEach(user => { %>
                             <% if (!user.isAdmin) { %>
                             <option value="<%= user.username %>">
@@ -111,7 +112,7 @@
                 <% }) %>
             </div>
 
-            <% include ./partials/free_space %>
+            <% include ../partials/free_space %>
         </div>
 
         <div class="side side-admin bg-dark">
@@ -119,15 +120,16 @@
                 <h2 class="bg-blue"><i class="fas fa-users"></i> user accounts</h2>
             </div>
 
-            <% include ./partials/user_accounts %>
+            <% include ../partials/user_accounts %>
         </div>
 
-    <% include ./partials/footer %>
+    <% include ../partials/footer %>
     </div>
 
     <script>
 
-        var socket = io.connect('https://parkya.herokuapp.com/');
+        // var socket = io.connect('https://parkya.herokuapp.com/');
+        var socket = io.connect('http://192.168.1.16:3000');
 
         // parent containers
         var modal = document.getElementById('modal');
@@ -153,6 +155,41 @@
         var slotLetter = '';
         var username = '';
 
+        var selectedUser = [];
+
+        function selectUser(event) {
+            
+            let username = event.target.value;
+
+            if (selectedUser.length <= 0) {
+                selectedUser.push(username);
+            
+            } else {    
+                let user = selectedUser.filter(user => user === username)[0];
+                
+                if (user !== event.target.value && event.target.value !== '') {
+
+                    socket.emit('activelyReserving', 
+                        {
+                            isReserving: false,
+                            slot:slotLetter,
+                            username: selectedUser[0]
+                        }
+                    
+                        );
+
+                    selectedUser[0] = username;
+                }
+            }
+
+            socket.emit('activelyReserving',
+                {
+                    isReserving: true,
+                    slot: slotLetter,
+                    username: selectedUser[selectedUser.length - 1],
+                }
+            );
+        }
 
         // listen for a signal from the server to refresh 
         socket.on('signalFromServer', (signal) => {
@@ -247,13 +284,7 @@
                 slotLetter = slotLetterEl.textContent;
 
                 if (slotState == 'vacant') {
-                    // emit that someone is actively reserving
-                     socket.emit('activelyReserving', 
-                        {
-                            isReserving: true,
-                            slot: slotLetter,
-                        }
-                    );
+
                     modalReservation.style.display = 'block';
                     modalReservation.style.zIndex = '99999';
                 }
@@ -348,9 +379,18 @@
             modal.style.display = 'none';
             modalReservation.style.display = 'none';
             modalResponse.style.display = 'none';
-            socket.emit('activelyReserving', {isReserving: false, slot: slotLetter});
+            socket.emit('activelyReserving', 
+                {
+                    isReserving: false, 
+                    slot: slotLetter, 
+                    username: selectedUser,
+                    isAdmin: true,
+                });
+
+            console.log(selectedUser)
+            selectedUser = [];
         }
 
     </script>
 
-<% include ./partials/bottom %>
+<% include ../partials/bottom %>
