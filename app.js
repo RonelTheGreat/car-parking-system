@@ -82,12 +82,20 @@ io.on('connection', (socket) => {
     // if someone has reserved a slot
     socket.on('signalFromClient', (signal) => {
         if (signal.reservation) {
-            io.sockets.emit('signalFromServer', {refresh: true, reserved: true, slot: signal.slot});
-
-        } else if (signal.changedRate) {
-            io.sockets.emit('signalFromServer', {refresh: true});
-
+            return io.sockets.emit('signalFromServer', 
+                {
+                    refresh: true, 
+                    reserved: true, 
+                    slot: signal.slot
+                });
         }
+        
+        io.sockets.emit('signalFromServer', {refresh: true});
+    })
+
+    // update if user is loaded
+    socket.on('signalFromAdmin', (signal) => {
+        signal.isLoaded && io.sockets.emit('signalFromServer', { refresh: true });
     })
 
 
@@ -107,18 +115,17 @@ io.on('connection', (socket) => {
                     socket.broadcast.emit('activelyReserving', {isReserving: true, slot: data.slot});
                 }
             })
+            return;   
+        }
 
         // if cancelled reservation
-        } else {
+        Slot.findOne({ slotLetter: data.slot }, (err, slot) => {
 
-            Slot.findOne({slotLetter: data.slot}, (err, slot) => {
-
-                const remainingUsers = slot.currentUsers.filter(user => user !== data.username);
-                slot.currentUsers = remainingUsers;
-                slot.save();
-                socket.broadcast.emit('activelyReserving', {isReserving: false, slot: data.slot});
-            })
-        }   
+            const remainingUsers = slot.currentUsers.filter(user => user !== data.username);
+            slot.currentUsers = remainingUsers;
+            slot.save();
+            socket.broadcast.emit('activelyReserving', { isReserving: false, slot: data.slot });
+        })
 
         
     })
@@ -197,17 +204,8 @@ io.on('connection', (socket) => {
                     return socket.emit('signalFromServer', { access: 'granted' });
                 }
             })
-
-        } else {
-            socket.emit('signalFromServer', {messageFromServer: 'Hello'});
         }
     });
-
-    socket.on('signalFromAdmin', (signal) => {
-        if (signal.isLoaded) {
-            io.sockets.emit('signalFromServer', {refresh: true});
-        }
-    })
 })
 
 
