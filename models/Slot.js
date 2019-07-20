@@ -14,6 +14,7 @@ var slotSchema = new mongoose.Schema({
         maxDuration: Number,
         reservationRate: Number,
     },
+    currentUsers: [String],
 });
 
 module.exports = mongoose.model('Slot', slotSchema);
