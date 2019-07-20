@@ -20,7 +20,7 @@ let createAdmin = (username, password) => {
         // create new admin and save to DB
         User.create(newUser, (err, newUser) => {
     
-            if (err) return console.log('Error in creating a new admin ...');
+            if (err) return console.log(`MESSAGE:Error in creating a new admin ERROR: ${err}`);
 
             console.log(newUser);
         })

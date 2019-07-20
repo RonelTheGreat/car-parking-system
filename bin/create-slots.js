@@ -30,8 +30,9 @@ let createSlots = () => {
     // loop through slots and save to DB
     slots.forEach(slot => {
         Slot.create(slot, (err, newSlot) => {
-            console.log('NEW SLOT IS CREATED: ')
-            console.log(newSlot);
+
+            if (err) return console.log(`MESSAGE: Error creating SLOTS ERROR: ${err}`);
+            console.log(`NEW SLOT IS CREATED: ${newSlot}`)
         })
     })
 }

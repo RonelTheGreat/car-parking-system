@@ -7,6 +7,7 @@ let reset = () => {
     // grab all slots from the database
     Slot.find({}, (err, slots) => {
 
+        if (err) return console.log(`MESSAGE: Error in reseting slots ERROR: ${err}`); 
         // loop through each slot and 
         // set state to vacant,
         // indicator to green,
@@ -16,12 +17,14 @@ let reset = () => {
                 slot.parokya = undefined;
                 slot.state = 'vacant';
                 slot.indicator = 'green';
-                slot.save();
             }
+            slot.currentUsers = [];
+            slot.save();
         })
 
         // grab all users from the DB
         User.find({}, (err, users) => {
+            if (err) return console.log(`MESSAGE: Error in reseting user ERROR: ${err}`); 
             // loop through each user
             // if user is reserved
             // set the reservation to none

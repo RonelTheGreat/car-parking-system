@@ -12,6 +12,7 @@ function updateTime (){
     .populate('parokya')
     .exec((err, slots) => {
         
+        if (err) return console.log(`MESSAGE: Error in UPDATING slot TIME ERROR: ${err}`); 
         // loop through each slot
         slots.forEach(slot => {
 
