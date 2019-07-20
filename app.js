@@ -37,8 +37,7 @@ app.use(session({
 
 
 // MONGODB CONNECTION
-// const DB_URL = 'mongodb+srv://admin123:admin123@cluster0-brxlt.mongodb.net/parkya_app?retryWrites=true&w=majority';
-const DB_URL = 'mongodb://localhost/parkya_app';
+const DB_URL = 'mongodb+srv://admin123:admin123@cluster0-brxlt.mongodb.net/parkya_app?retryWrites=true&w=majority';
 mongoose.connect(DB_URL);
 
 var db = mongoose.connection;
