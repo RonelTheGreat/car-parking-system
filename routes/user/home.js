@@ -22,7 +22,7 @@ router.get('/home', (req, res) => {
     .then((slots) => {
         // count vacant slots
         Slot.countDocuments({state: 'vacant'}, (err, count) => {
-            if (err) return console.log('Something went wrong querying the slots ...');
+            if (err) return console.log(`MESSAGE: Error finding the slot ERROR: ${err}`); 
 
             // find user
             User.findOne({username: req.session.user.username}, 
@@ -32,7 +32,7 @@ router.get('/home', (req, res) => {
                 if (err) return console.log('error finding such user ...');
 
                 // if nothing else fails render home page
-                res.render('home',
+                res.render('user/home',
                     {
                         user: user,
                         slots: slots, 

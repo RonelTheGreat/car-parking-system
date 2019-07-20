@@ -3,7 +3,7 @@ const express   = require('express'),
 
 // SIMULATOR
 router.get('/', (req, res) => {
-    res.render('simulate');
+    res.render('common/simulate');
 })
 
 module.exports = router;

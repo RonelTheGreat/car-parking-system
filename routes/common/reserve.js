@@ -15,12 +15,12 @@ router.post('/', (req, res) => {
 
     // find specific slot in the DB
     Slot.findOne({slotLetter: slotLetter}, (err, slot) => {
-        if (err) return console.log('Error finding the slot');
+        if (err) return console.log(`MESSAGE: Error finding the slot ERROR: ${err}`); 
 
         // find the user who is reserving in the DB
         User.findOne({username: username}, (err, user) => {
 
-            if (err) return console.log('Something went wrong');
+            if (err) return console.log(`MESSAGE: Error in finding user ERROR: ${err}`); 
 
             // check if the user reserving is the first one to reserve
             if (slot.currentUsers[0] !== username) {

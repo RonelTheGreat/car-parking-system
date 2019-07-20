@@ -22,17 +22,18 @@ router.get('/home', (req, res) => {
     .sort([['slotLetter', 'ascending']])
     .exec((err, slots) => {
 
-        if (err) return console.log('Error querying slots ...');
+        if (err) return console.log(`MESSAGE: Error querying slots ERROR: ${err}`); 
 
         // count vacant slots
         Slot.countDocuments({state: 'vacant'}, (err, count) => {
-            if (err) return console.log('Something went wrong querying the slots ...');
+            if (err) return console.log(`MESSAGE: Error in COUNTING slots ERROR: ${err}`); 
             
             // find all users that are registered and sort from a-z
             User.find({})
             .sort([['username', 'ascending']])
             .then((users) => {
-                if (err) return console.log('Something went wrong getting users ...');
+
+                if (err) return console.log(`MESSAGE: Error in getting all users ERROR: ${err}`); 
 
                 // loop through each reserved user
                 // calculate expiration and remaining time
@@ -45,7 +46,7 @@ router.get('/home', (req, res) => {
                 })
 
                 // if nothing fails above, render admin's page
-                res.render('admin', {users: users, admin: req.session.admin, slots: slots, vacant: count});
+                res.render('admin/home', {users: users, admin: req.session.admin, slots: slots, vacant: count});
             })
         })     
     })

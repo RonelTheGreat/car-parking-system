@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     req.session.regErrors = null;
     req.session.success = null;
 
-    res.render('login', {errors: req.session.loginErrors, inputValues: req.session.inputValues});
+    res.render('common/login', {errors: req.session.loginErrors, inputValues: req.session.inputValues});
 })
 
 router.post('/', (req, res) => {
@@ -54,7 +54,7 @@ router.post('/', (req, res) => {
 
                 // if username is valid, compare the password with the hashed password on DB
                 bcrypt.compare(password, user.password, (err, result) => {
-
+                    if (err) return console.log(`MESSAGE: Error in comparing passwords ERROR: ${err}`); 
                     // if password match then we have a valid user
                     if (result) {
 

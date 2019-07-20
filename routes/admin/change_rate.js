@@ -12,6 +12,9 @@ router.post('/change_rate', (req, res) => {
     // find all slot and save the current reservation rates
     // i.e. rate per minute, max duration of reservation etc.
     Slot.find({}, (err, slots) => {
+
+        if (err) return console.log(`MESSAGE: Error in changing slot rate ERROR: ${err}`); 
+
         slots.forEach(slot => {        
             slot.slotRate.ratePerMin = ratePerMin;
             slot.slotRate.maxDuration = maxDuration;

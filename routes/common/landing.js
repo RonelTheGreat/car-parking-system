@@ -14,9 +14,9 @@ router.get('/', (req, res) => {
     .sort([['slotLetter', 'ascending']])
     .then((slots) => {
         Slot.countDocuments({state: 'vacant'}, (err, count) => {
-            if (err) return console.log('Something went wrong querying the slots ...');
+            if (err) return console.log(`MESSAGE: Error in COUNTING slots ERROR: ${err}`); 
 
-            res.render('landing', {slots: slots,  vacant: count});
+            res.render('common/landing', {slots: slots,  vacant: count});
         })     
     })
 })

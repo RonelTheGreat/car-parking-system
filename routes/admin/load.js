@@ -13,7 +13,8 @@ router.get('/load/:username', (req, res) => {
 
     // find specific user to load
     User.findOne({username: username}, (err, user) => {
-        if (err) return console.log('Something went wrong getting users ...');
+
+        if (err) return console.log(`MESSAGE: Error in finding such user ERROR: ${err}`); 
 
         // find all users and sort from a-z
         // to be rendered on the page
@@ -24,8 +25,9 @@ router.get('/load/:username', (req, res) => {
             // find a one slot to get the reservation rates
             Slot.findOne({ slotLetter: 'a' }, (err, slot) => {
 
+                if (err) return console.log(`MESSAGE: Error in finding slot ERROR: ${err}`); 
                 // then render user's page
-                res.render('user',
+                res.render('admin/user',
                     {
                         slotRate: slot.slotRate,
                         users: users,

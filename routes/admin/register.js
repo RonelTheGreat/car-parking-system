@@ -13,7 +13,7 @@ router.get('/register', (req, res) => {
     if (!req.session.isAdmin) return res.redirect('/login');
 
     // if nothing fails, render registration page
-    res.render('register', {errors: req.session.regErrors, inputValues: req.session.inputValues});
+    res.render('admin/register', {errors: req.session.regErrors, inputValues: req.session.inputValues});
 })
 
 router.post('/register', (req, res) => {
@@ -88,9 +88,9 @@ router.post('/register', (req, res) => {
 
         User.create(newUser, (err, newUser) => {
 
-            if (err) return console.log('Error in creating a new parokya ...');
+            if (err) return console.log(`MESSAGE: Error in creating a new user ERROR: ${err}`); 
 
-            req.session.success = 'successfully added new parokya !';
+            req.session.success = 'successfully added new user !';
             req.session.inputValues = null;
             req.session.regErrors = null;
             res.redirect('/admin/home');
