@@ -1,5 +1,6 @@
 const express   = require('express'),
       router    = express.Router(),
+      bcrypt    = require('bcrypt'),
       User      = require('../../models/Slot')
 
 
