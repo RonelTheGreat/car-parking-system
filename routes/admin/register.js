@@ -1,7 +1,7 @@
 const express   = require('express'),
       router    = express.Router(),
       bcrypt    = require('bcrypt'),
-      User      = require('../../models/Slot')
+      User      = require('../../models/User')
 
 
 // REGISTER USER
