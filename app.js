@@ -198,15 +198,17 @@ io.on('connection', (socket) => {
                     return socket.emit('signalFromServer', { access: 'denied' });
                 }
 
-                Slot.findOne({ slotLetter: user.reservation.slot}, (err, slot) => {
-                    if (slot.state === 'occupied') {
-                        return socket.emit('signalFromServer', { access: 'denied' });
-                    }
-                    
-                    if (slot.state === 'reserved') {
-                        return socket.emit('signalFromServer', { access: 'granted' });
-                    }
-                })
+                if (user.reservation.slot !== undefined) {
+                    Slot.findOne({ slotLetter: user.reservation.slot}, (err, slot) => {
+                        if (slot.state === 'occupied') {
+                            return socket.emit('signalFromServer', { access: 'denied' });
+                        }  
+                        if (slot.state === 'reserved') {
+                            return socket.emit('signalFromServer', { access: 'granted' });
+                        }
+                    })
+                }
+
                 
             })
         }
