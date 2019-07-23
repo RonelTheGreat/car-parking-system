@@ -154,6 +154,8 @@
         var slotLetter = '';
         var username = '';
 
+        var isExcess = isExcessContainer.textContent; 
+
         var selectedUser = [];
 
         function selectUser(event) {
@@ -223,7 +225,6 @@
                         if (!time.isExcess) {
                             let { hour, min, sec } = time.remaining;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
-                            isExcessContainer.textContent = 'false';
                         } else {
                             let { hour, min, sec } = time.excess;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
@@ -335,8 +336,8 @@
                                 </span>${duration} min.`;
 
                     remainingTimeContainer.innerHTML = `<span class="modal-lbl" 
-                    style="color: ${isExcess == 'true' ? '#FF554E' : ''}">
-                                <i class="fas fa-stopwatch"></i>${isExcess == 'true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
+                    style="color: ${isExcess === 'true' ? '#FF554E' : ''}">
+                                <i class="fas fa-stopwatch"></i>${isExcess ==='true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
    
                     modal.style.display = 'block';
                     modal.style.zIndex = '99999';
