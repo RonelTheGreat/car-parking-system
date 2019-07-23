@@ -154,8 +154,6 @@
         var slotLetter = '';
         var username = '';
 
-        var isExcess = isExcessContainer.textContent; 
-
         var selectedUser = [];
 
         function selectUser(event) {
@@ -337,7 +335,7 @@
 
                     remainingTimeContainer.innerHTML = `<span class="modal-lbl" 
                     style="color: ${isExcess === 'true' ? '#FF554E' : ''}">
-                                <i class="fas fa-stopwatch"></i>${isExcess ==='true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
+                                <i class="fas fa-stopwatch"></i>${isExcessContainer.textContent ==='true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
    
                     modal.style.display = 'block';
                     modal.style.zIndex = '99999';
