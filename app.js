@@ -192,24 +192,22 @@ io.on('connection', (socket) => {
                 if (err) {
                     return socket.emit('signalFromServer', { access: 'denied' });
                 }
-
+                
                 if (user === null || (user.reservation.slot === undefined)) {
                     console.log('access denied');
                     return socket.emit('signalFromServer', { access: 'denied' });
                 }
 
                 if (user.reservation.slot !== undefined) {
-                    Slot.findOne({ slotLetter: user.reservation.slot}, (err, slot) => {
+                    Slot.findOne({slotLetter: user.reservation.slot}, (err, slot) => {
                         if (slot.state === 'occupied') {
                             return socket.emit('signalFromServer', { access: 'denied' });
-                        }  
-                        if (slot.state === 'reserved') {
-                            return socket.emit('signalFromServer', { access: 'granted' });
                         }
+                        console.log('access granted');
+                        return socket.emit('signalFromServer', { access: 'granted' });
                     })
-                }
 
-                
+                }
             })
         }
     });
