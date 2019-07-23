@@ -1,54 +1,26 @@
-/* 
-  ##Device = Desktops
-  ##Screen = 1281px to higher resolution desktops
-*/
+  
+  
+ @media (min-width: 1024px) {
+     
+    .terms-brand-cont {
+        width: 50%;
+        padding-right: 2rem;
+        margin: 0 auto;
+    }
 
-@media (min-width: 1281px) {
+    .terms-parent {
+        width: 60%;
+        margin: 0 auto;
+    }
 
-    
-}
-  
-  /* 
-    ##Device = Laptops, Desktops
-    ##Screen = B/w 1025px to 1280px
-  */
-  
-@media (min-width: 1025px) and (max-width: 1280px) {
-    
-    
-    
-}
-  
-  /* 
-    ##Device = Tablets, Ipads (portrait)
-    ##Screen = B/w 768px to 1024px
-  */
-  
-@media (min-width: 768px) and (max-width: 1024px) {
-    
-    
-    
-}
-  
-  /* 
-    ##Device = Tablets, Ipads (landscape)
-    ##Screen = B/w 768px to 1024px
-  */
-  
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-    
+    .contact-parent section {
+        margin: 3% auto;
+    }
 
-    
-}
-  
-  /* 
-    ##Device = Low Resolution Tablets, Mobiles (Landscape)
-    ##Screen = B/w 481px to 767px
-  */
-  
-@media (min-width: 481px) and (max-width: 767px) {
-
-}
+    .contact-parent section .links div {
+        margin: 0.2rem;
+    }
+ } 
   
   /* 
     ##Device = Most of the Smartphones Mobiles (Portrait)
