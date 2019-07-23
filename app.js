@@ -199,8 +199,15 @@ io.on('connection', (socket) => {
                 }
 
                 if (user.reservation.slot !== undefined) {
-                    console.log('access granted');
-                    return socket.emit('signalFromServer', { access: 'granted' });
+
+                    Slot.findOne({slotLetter: user.reservation.slot}, (err, slot) => {
+                        if (slot.state === 'occupied') {
+                            return socket.emit('signalFromServer', { access: 'denied' });
+                        }
+                        console.log('access granted');
+                        return socket.emit('signalFromServer', { access: 'granted' });
+                    })
+
                 }
             })
         }
