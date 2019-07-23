@@ -217,17 +217,18 @@
                 if (slot.children[2] !== undefined) {
 
                     let username = slot.children[2].innerText;
+                    let isExcessCont = slot.children[8];
 
                     if (time.username === username) {
 
                         if (!time.isExcess) {
                             let { hour, min, sec } = time.remaining;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
-                            isExcessContainer.textContent  ='false';
+                            isExcessCont.textContent  ='false';
                         } else {
                             let { hour, min, sec } = time.excess;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
-                            isExcessContainer.textContent  ='true';
+                            isExcessCont.textContent  ='true';
                         }
                     }
                 }
