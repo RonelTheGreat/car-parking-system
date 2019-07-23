@@ -63,6 +63,7 @@ app.use('/login', require('./routes/common/login'));
 app.use('/reserve', require('./routes/common/reserve'));
 app.use('/logout', require('./routes/common/logout'));
 app.use('/terms', require('./routes/common/terms'));
+app.use('/contact', require('./routes/common/contact'));
 app.use('/simulate', require('./routes/common/simulate'));
 
 
