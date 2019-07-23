@@ -223,11 +223,11 @@
                         if (!time.isExcess) {
                             let { hour, min, sec } = time.remaining;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
+                            isExcessContainer.textContent  ='false';
                         } else {
                             let { hour, min, sec } = time.excess;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
                             isExcessContainer.textContent  ='true';
-                            console.log(isExcessContainer.textContent);
                         }
                     }
                 }
@@ -298,6 +298,7 @@
                     var durationElement = event.target.querySelector('.duration');
                     var expirationEl = event.target.querySelector('.expiration');
                     var timeEl = event.target.querySelector('#time');
+                    var isExcess = event.target.querySelector('#isExcess').textContent;
                     var excessTimeEl = event.target.querySelector('.excess-time');
 
                     // extracted information
@@ -336,7 +337,7 @@
 
                     remainingTimeContainer.innerHTML = `<span class="modal-lbl" 
                     style="color: ${isExcess === 'true' ? '#FF554E' : ''}">
-                                <i class="fas fa-stopwatch"></i>${isExcessContainer.textContent ==='true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
+                                <i class="fas fa-stopwatch"></i>${isExcess ==='true' ? 'excess time:' : 'remaining time:'}</span> ${time}`;
    
                     modal.style.display = 'block';
                     modal.style.zIndex = '99999';
