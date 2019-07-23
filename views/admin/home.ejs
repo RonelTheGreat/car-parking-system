@@ -223,6 +223,7 @@
                         if (!time.isExcess) {
                             let { hour, min, sec } = time.remaining;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
+                            isExcessContainer.textContent = 'false';
                         } else {
                             let { hour, min, sec } = time.excess;
                             slot.children[7].textContent = `${hour} : ${min} : ${sec}`;
