@@ -199,14 +199,13 @@ io.on('connection', (socket) => {
                 }
 
                 if (user.reservation.slot !== undefined) {
-                    Slot.findOne({slotLetter: user.reservation.slot}, (err, slot) => {
+                    Slot.findOne({slotLetter: user.reservation.slot.toLowerCase()}, (err, slot) => {
                         if (slot.state === 'occupied') {
-                            return socket.emit('signalFromServer', { access: 'denied' });
+                            socket.emit('signalFromServer', { access: 'denied' });
+                        } else {
+                            socket.emit('signalFromServer', { access: 'granted' });
                         }
-                        console.log('access granted');
-                        return socket.emit('signalFromServer', { access: 'granted' });
                     })
-
                 }
             })
         }
